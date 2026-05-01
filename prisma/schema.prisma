@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Subject {
+  id           String             @id @default(cuid())
+  username     String             @unique @default(cuid())
+  password     String             @default("")
+  currentPhase String             @default("PRE_TEST")
+  currentStep  Int                @default(1)
+  savedState   String?
+  createdAt    DateTime           @default(now())
+  preTest      PreTestResponse?
+  postTest     PostTestResponse?
+}
+
+model PreTestResponse {
+  id        String   @id @default(cuid())
+  subjectId String   @unique
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  data      String   // JSON string of answers
+  duration  Int?     // Duration in seconds
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+model PostTestResponse {
+  id        String   @id @default(cuid())
+  subjectId String   @unique
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  data      String   // JSON string of answers
+  aiLogs    String?  // JSON string of chat logs with AI
+  duration  Int?     // Duration in seconds
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
