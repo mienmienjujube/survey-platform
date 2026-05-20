@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能学术实验问卷平台 - 交互体验演示</title>
+  
+  <!-- 引入现代高端字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #1e1b4b 100%);
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.07);
+      --glass-highlight: rgba(255, 255, 255, 0.12);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.4);
+      --accent: #d946ef;
+      --accent-glow: rgba(217, 70, 239, 0.3);
+      --success: #10b981;
+      --card-radius: 24px;
+      --font-stack: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-stack);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+
+    /* 顶部进度条 */
+    .progress-container {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      padding: 0 10px;
+    }
+
+    .progress-bar-bg {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-50%);
+      z-index: 1;
+      border-radius: 2px;
+    }
+
+    .progress-bar-active {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transform: translateY(-50%);
+      z-index: 2;
+      border-radius: 2px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
+
+    .progress-step {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #1f2937;
+      border: 2px solid #374151;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      z-index: 3;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+
+    .progress-step.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .progress-step.completed {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+
+    .progress-step .step-label {
+      position: absolute;
+      top: 42px;
+      white-space: nowrap;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+
+    .progress-step.active .step-label {
+      color: white;
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    /* 核心毛玻璃卡片 */
+    .glass-card {
+      width: 100%;
+      max-width: 900px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--card-radius);
+      padding: 3rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--glass-highlight);
+      display: none; /* 由 JS 控制显隐 */
+      animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card.active {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 渐变发光装饰球 */
+    .glow-sphere {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .glow-sphere-1 {
+      top: -150px;
+      left: -150px;
+      background: var(--primary);
+    }
+
+    .glow-sphere-2 {
+      bottom: -150px;
+      right: -150px;
+      background: var(--accent);
+    }
+
+    /* 文字排版 */
+    h1, h2, h3 {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+
+    p {
+      line-height: 1.7;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    /* 表单组件 */
+    .form-group {
+      margin-bottom: 1.8rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+      color: #e5e7eb;
+    }
+
+    .input-text {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      color: white;
+      font-size: 1rem;
+      transition: all 0.3s;
+      outline: none;
+    }
+
+    .input-text:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.25);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* 交互式选择项 */
+    .option-card-group {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .option-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .option-card:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .option-card.selected {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: var(--primary);
+      box-shadow: inset 0 0 0 1px var(--primary);
+    }
+
+    .option-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #4b5563;
+      margin-right: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .option-card.selected .option-circle {
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .option-card.selected .option-circle::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+    }
+
+    .option-text {
+      font-size: 0.95rem;
+      color: #e5e7eb;
+    }
+
+    /* 按钮组件 */
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2.5rem;
+      gap: 1rem;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+      border: none;
+      color: white;
+      padding: 0.9rem 2.2rem;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px var(--primary-glow);
+      text-decoration: none;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px var(--primary-glow);
+      filter: brightness(1.1);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      background: #374151;
+      color: #9ca3af;
+      cursor: not-allowed;
+      box-shadow: none;
+      opacity: 0.5;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* 学术阅读与AI辅助布局 (双栏) */
+    .experiment-container {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2rem;
+      height: 520px;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .experiment-container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+    }
+
+    .reading-panel {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      overflow-y: auto;
+      height: 100%;
+      line-height: 1.8;
+      font-size: 0.95rem;
+      color: #d1d5db;
+    }
+
+    .reading-panel p {
+      margin-bottom: 1.2rem;
+    }
+
+    .reading-panel strong {
+      color: white;
+    }
+
+    .chat-panel {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.8rem 1.2rem;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .ai-badge {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .chat-bubble {
+      max-width: 85%;
+      padding: 0.8rem 1.1rem;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .chat-bubble.ai {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e5e7eb;
+      align-self: flex-start;
+      border-top-left-radius: 2px;
+    }
+
+    .chat-bubble.user {
+      background: var(--primary);
+      color: white;
+      align-self: flex-end;
+      border-top-right-radius: 2px;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+    }
+
+    .chat-input-area {
+      padding: 0.8rem;
+      background: rgba(0, 0, 0, 0.15);
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 0.7rem 1rem;
+      color: white;
+      outline: none;
+      font-size: 0.9rem;
+      transition: border 0.3s;
+    }
+
+    .chat-input:focus {
+      border-color: var(--primary);
+    }
+
+    .chat-send-btn {
+      background: var(--primary);
+      border: none;
+      color: white;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .chat-send-btn:hover {
+      filter: brightness(1.1);
+      transform: scale(1.05);
+    }
+
+    /* 顶部的学术纯矢量 logo */
+    .academic-logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #3a3a3c 0%, #1c1c1e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem auto;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* 同意书特殊底色框 */
+    .consent-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      padding: 1.8rem;
+      border-radius: 16px;
+      max-height: 380px;
+      overflow-y: auto;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .consent-box h3 {
+      font-size: 1.1rem;
+      margin: 1.5rem 0 0.5rem 0;
+      color: white;
+    }
+
+    .consent-box h3:first-of-type {
+      margin-top: 0;
+    }
+
+    /* 单独提示区域 */
+    .toast {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--success);
+      color: #34d399;
+      padding: 0.8rem 1.2rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* 导出数据大段预览 */
+    .json-preview {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      color: #34d399;
+      max-height: 250px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-top: 1rem;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部进度指示条 -->
+  <div class="progress-container">
+    <div class="progress-bar-bg"></div>
+    <div class="progress-bar-active" id="progressBar"></div>
+    
+    <div class="progress-step active" id="pStep1">
+      1 <span class="step-label">登录</span>
+    </div>
+    <div class="progress-step" id="pStep2">
+      2 <span class="step-label">知情同意</span>
+    </div>
+    <div class="progress-step" id="pStep3">
+      3 <span class="step-label">前测阶段</span>
+    </div>
+    <div class="progress-step" id="pStep4">
+      4 <span class="step-label">阅读与AI</span>
+    </div>
+    <div class="progress-step" id="pStep5">
+      5 <span class="step-label">后测反馈</span>
+    </div>
+    <div class="progress-step" id="pStep6">
+      6 <span class="step-label">实验完成</span>
+    </div>
+  </div>
+
+  <!-- 主卡片容器 -->
+  <div style="width:100%; max-width:900px; position:relative;">
+    <div class="glow-sphere glow-sphere-1"></div>
+    <div class="glow-sphere glow-sphere-2"></div>
+
+    <!-- Step 1: 登录界面 -->
+    <div class="glass-card active" id="step1Card">
+      <div class="academic-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <h1>学术实验问卷平台</h1>
+      <p style="text-align: center; margin-top: -1.5rem; margin-bottom: 2rem;">前后测认知对比与交互行为智能追踪系统</p>
+      
+      <div class="form-group" style="max-width: 400px; margin: 0 auto 1.5rem auto;">
+        <label class="form-label" for="subjectId">请输入您的受试者编号 (主试提供)</label>
+        <input type="text" id="subjectId" class="input-text" placeholder="例如: SUB-2026-001" value="SUB-DEMO-99">
+      </div>
+      
+      <div style="text-align: center; margin-top: 2rem;">
+        <button class="btn" onclick="goToStep2()">开始实验项目</button>
+      </div>
+    </div>
+
+    <!-- Step 2: 知情同意书 -->
+    <div class="glass-card" id="step2Card">
+      <h2>知情同意书</h2>
+      <p style="margin-bottom: 1.5rem;">请您在开始前仔细阅读本实验的相关隐私权条款和数据规范：</p>
+      
+      <div class="consent-box">
+        <h3>一、研究背景与目的</h3>
+        <p>本研究由研究小组发起，旨在客观评估生成式人工智能（AI）工具在知识获取、辅助学习和批判性思维启发过程中的中介效用，并追踪探索人类在智能化环境下的信息甄别能力。</p>
+        
+        <h3>二、研究程序与实验步骤</h3>
+        <p>1. 问卷填答：您需要先完成基准前测问卷，这包括认知常识判断和基本人口学背景调查。<br/>
+        2. 学术阅读与交互：您将被提供一篇深度材料，并在阅读过程中被授权使用我们的内置 AI 对话助手，向其请教任何关于文本背景、结构或名词的疑问。<br/>
+        3. 认知后测：阅读完毕后，您将接受针对阅读材料的后测评估以及实验反馈问卷。</p>
+        
+        <h3>三、隐私保障与数据脱敏声明</h3>
+        <p>1. 本平台绝对保证您的数据安全。我们不会以任何形式索要您的真实姓名、手机号等强身份关联信息。<br/>
+        2. 您与 AI 的全部对话历史仅会在脱敏、隐藏真实 IP 后，作为人机交互日志记录于数据库中，仅限本项目的科研质性质化编码和定量分析使用，保存年限不超过5年，期满自动物理销毁。</p>
+        
+        <h3>四、自愿参与及中途退出权</h3>
+        <p>您的参与行为是百分之百自愿的。实验过程中，您可以随时在不受任何连带负面影响的情况下中途关闭浏览器退出，已保存的临时进度将自动从服务端被删除。</p>
+      </div>
+
+      <div style="text-align: center;">
+        <button class="btn" id="agreeBtn" disabled onclick="goToStep3()">请认真阅读 (5s)</button>
+      </div>
+    </div>
+
+    <!-- Step 3: 前测基本信息调查 -->
+    <div class="glass-card" id="step3Card">
+      <h2>阶段一：基准测试与基本调查 (前测)</h2>
+      <p style="margin-bottom: 2rem;">请如实填写您在日常学习与研究中的基本习惯，这非常关键：</p>
+      
+      <div class="form-group">
+        <label class="form-label">1. 您使用生成式人工智能工具（如 ChatGPT、DeepSeek、Claude 等）的频率如何？</label>
+        <div class="option-card-group">
+          <div class="option-card" onclick="selectRadio('q1', 'always', this)">
+            <div class="option-circle"></div>
+            <div class="option-text">每天高频使用 (多次以上)</div>
+          </div>
+          <div class="option-card" onclick="selectRadio('q1', 'sometimes', this)">
+            <div class="option-circle"></div>
+            <div class="option-text">每周偶尔使用一次或几次</div>
+          </div>
+          <div class="option-card" onclick="selectRadio('q1', 'rarely', this)">
+            <div class="option-circle"></div>
+            <div class="option-text">极少使用 / 仅听说过概念</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">2. 基准常识：您认为生成式人工智能产生“幻觉”（即一本正经地胡说八道）的主要原因是？</label>
+        <div class="option-card-group">
+          <div class="option-card" onclick="selectRadio('q2', 'prob', this)">
+            <div class="option-circle"></div>
+            <div class="option-text">基于概率统计预测下一个词的生成算法本质缺陷</div>
+          </div>
+          <div class="option-card" onclick="selectRadio('q2', 'know', this)">
+            <div class="option-circle"></div>
+            <div class="option-text">后台人工故意输入了虚假知识</div>
+          </div>
+          <div class="option-card" onclick="selectRadio('q2', 'cpu', this)">
+            <div class="option-circle"></div>
+            <div class="option-text">服务器算力或运算资源暂时耗尽</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="prevStep(2)">返回</button>
+        <button class="btn" id="step3Next" disabled onclick="goToStep4()">下一步 (进入核心阅读与交互)</button>
+      </div>
+    </div>
+
+    <!-- Step 4: 学术阅读与AI辅助 (核心交互双栏) -->
+    <div class="glass-card" id="step4Card" style="max-width: 950px; padding: 2rem 2.5rem;">
+      <h2 style="font-size: 1.4rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <span>阶段二：AI 辅助阅读理解研究实验</span>
+        <span style="font-size: 0.85rem; background: rgba(99, 102, 241, 0.15); color: #a5b4fc; padding: 0.3rem 0.8rem; border-radius: 30px;" id="subjectBadge">受试者: SUB-DEMO-99</span>
+      </h2>
+      <p style="margin-bottom: 1.2rem; font-size: 0.9rem;">提示：请仔细阅读左侧学术文章。在阅读期间，如果您遇到任何不懂的技术名词、背景，可以在右侧的 AI 助手中自由输入并提问，它将协助您思考。</p>
+      
+      <div class="experiment-container">
+        <!-- 左侧学术阅读面板 -->
+        <div class="reading-panel">
+          <h3 style="color: white; font-size: 1.15rem; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.5rem;">技术社会学：生成式 AI 的结构化认知溢出</h3>
+          <p>生成式人工智能（Generative AI，如大语言模型）的爆发正在彻底改变知识生产和信息交互的微观图景。从技术社会学的视角来看，AI 并不只是一种简单的劳动替代工具，而是一种<strong>“结构化认知溢出”的催化器</strong>。</p>
+          <p>在传统的研究范式下，人类学者通过系统的文献梳理、数据比对以及逻辑推理来搭建认知框架。这一过程具有高度的结构化约束。然而，大语言模型通过海量高维向量关联，提供了前所未有的“无界关联”能力。这种计算特性导致人类的“知识联想”不再受限于物理介质的局部搜索，从而产生突变的灵感关联。</p>
+          <p>但这也衍生出关键的<strong>“认知寄生”隐患</strong>。当受试者过度依赖黑箱化算法提供的问题解答和结构图景时，其大脑的底层工作记忆区活跃度显著降低，进而弱化对信息的深度求证欲望。实验探究人类在此技术变革期的自适应批判性思维水平，具有重要的当代社会学价值。</p>
+          <p style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem; color: #a5b4fc; font-weight: 500;">阅读后请回答：</p>
+          <p><strong>前测关联提问：</strong>基于以上文本，您认为“认知寄生”隐患主要指向人类大脑哪种机能的退化风险？</p>
+          <div class="option-card" onclick="selectReadingAnswer('read_q1', 'working_mem', this)">
+            <div class="option-circle"></div>
+            <span class="option-text">深度工作记忆活跃度与求证批判冲动</span>
+          </div>
+          <div class="option-card" style="margin-top:0.5rem" onclick="selectReadingAnswer('read_q1', 'phys_limit', this)">
+            <div class="option-circle"></div>
+            <span class="option-text">物理媒介局部检索与搜索的速度</span>
+          </div>
+        </div>
+
+        <!-- 右侧AI对话面板 -->
+        <div class="chat-panel">
+          <div class="chat-header">
+            <div class="ai-badge"></div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #fff;">内置学术辅助 AI 助手 (GPT/DeepSeek V4-Flash)</div>
+          </div>
+          
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-bubble ai">
+              您好！我是本次实验的 AI 助手。针对本篇技术社会学的材料，您可以向我提问任何问题。例如：“什么是结构化认知溢出？”、“如何理解认知寄生？”
+            </div>
+          </div>
+          
+          <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="向 AI 提问..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="chat-send-btn" onclick="sendChatMessage()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="prevStep(3)">返回</button>
+        <button class="btn" id="step4Next" disabled onclick="goToStep5()">下一步 (完成阅读并填写后测)</button>
+      </div>
+    </div>
+
+    <!-- Step 5: 后测与最终反馈 -->
+    <div class="glass-card" id="step5Card">
+      <h2>阶段三：认知后测与交互反馈</h2>
+      <p style="margin-bottom: 2rem;">实验已进入最终步骤，请结合您的交互体验，填写如下反馈：</p>
+      
+      <div class="form-group">
+        <label class="form-label">1. 您在刚才的阅读交互中，是否能敏锐察觉到 AI 对话在启发灵感的同时，减少了您主动求证的倾向？</label>
+        <div class="option-card-group">
+          <div class="option-card" onclick="selectRadio('post_q1', 'strong', this)">
+            <div class="option-circle"></div>
+            <div class="option-text">有非常强烈的同感，AI 的及时回复让人变得懒惰</div>
+          </div>
+          <div class="option-card" onclick="selectRadio('post_q1', 'weak', this)">
+            <div class="option-circle"></div>
+            <div class="option-text">有一点感觉，但可以通过主观能动性来克制</div>
+          </div>
+          <div class="option-card" onclick="selectRadio('post_q1', 'no', this)">
+            <div class="option-circle"></div>
+            <div class="option-text">完全没有，AI 反而激发了我去查阅外部资料的兴趣</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="feedbackText">2. 开放性反馈：您认为生成式人工智能应如何演进，才能既提供认知辅助又避免上述的“认知寄生”隐患？</label>
+        <textarea id="feedbackText" class="input-text" style="resize: vertical; min-height: 100px; font-family:inherit; font-size:0.95rem; line-height:1.6;" placeholder="请输入您的洞见，支持换行..." oninput="checkFeedbackText()"></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="prevStep(4)">返回</button>
+        <button class="btn" id="step5Next" disabled onclick="goToStep6()">提交我的问卷数据</button>
+      </div>
+    </div>
+
+    <!-- Step 6: 实验完成与数据导出 -->
+    <div class="glass-card" id="step6Card">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 10px rgba(16,185,129,0.3));"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <h2 style="text-align: center; color: #34d399;">实验完成！感谢您的积极参与！</h2>
+      <p style="text-align: center; max-width: 600px; margin: 0 auto 2rem auto;">
+        您的本次实验答卷和 AI 交互日志已被本地环境完整追踪脱敏。您可以直接在下方查看本次收集并格式化后的受试者数据包，或者将其导出。
+      </p>
+
+      <div class="toast" id="copyToast">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <span>实验 JSON 数据已复制到剪贴板，可用于科研编码！</span>
+      </div>
+
+      <h3 style="color: white; font-size: 1.05rem; margin-bottom: 0.5rem; text-align: left;">受试者实验数据预览 (JSON 格式化)</h3>
+      <div class="json-preview" id="dataPreview">
+        正在读取记录...
+      </div>
+
+      <div class="btn-group" style="justify-content: center; gap: 1.5rem;">
+        <button class="btn" onclick="copyJsonData()">复制数据内容</button>
+        <button class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16,185,129,0.3);" onclick="downloadCSV()">导出脱敏实验 CSV</button>
+      </div>
+
+      <p style="margin-top: 2rem; font-size: 0.8rem; text-align: center; color: var(--text-muted);">
+        提示：双击重新体验演示可以刷新测试数据。
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // 实验数据收集容器
+    const experimentData = {
+      subjectId: 'SUB-DEMO-99',
+      durationSeconds: 0,
+      timestamp: '',
+      consentAgreed: false,
+      preAnswers: {
+        ai_frequency: '',
+        hallucination_reason: ''
+      },
+      readingAnswer: '',
+      chatLogs: [],
+      postAnswers: {
+        dependency_awareness: '',
+        open_feedback: ''
+      }
+    };
+
+    let timerInterval = null;
+    let secondsElapsed = 0;
+
+    // 步骤跳转逻辑
+    function updateProgress(stepNumber) {
+      const percentage = ((stepNumber - 1) / 5) * 100;
+      document.getElementById('progressBar').style.width = percentage + '%';
+
+      for (let i = 1; i <= 6; i++) {
+        const stepElement = document.getElementById('pStep' + i);
+        if (i < stepNumber) {
+          stepElement.className = 'progress-step completed';
+        } else if (i === stepNumber) {
+          stepElement.className = 'progress-step active';
+        } else {
+          stepElement.className = 'progress-step';
+        }
+      }
+    }
+
+    function switchCard(stepId) {
+      document.querySelectorAll('.glass-card').forEach(card => card.classList.remove('active'));
+      document.getElementById('step' + stepId + 'Card').classList.add('active');
+      updateProgress(stepId);
+    }
+
+    // Step 1 -> Step 2
+    function goToStep2() {
+      const subId = document.getElementById('subjectId').value.trim();
+      if (!subId) {
+        alert('请输入有效的受试者编号！');
+        return;
+      }
+      experimentData.subjectId = subId;
+      document.getElementById('subjectBadge').innerText = '受试者: ' + subId;
+
+      switchCard(2);
+
+      // 开始同意倒计时
+      let countdown = 5;
+      const agreeBtn = document.getElementById('agreeBtn');
+      agreeBtn.disabled = true;
+      
+      const timer = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+          agreeBtn.innerText = `请认真阅读 (${countdown}s)`;
+        } else {
+          clearInterval(timer);
+          agreeBtn.innerText = "我已充分阅读并同意，开始实验";
+          agreeBtn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    // Step 2 -> Step 3
+    function goToStep3() {
+      experimentData.consentAgreed = true;
+      experimentData.timestamp = new Date().toLocaleString();
+      
+      // 启动实验总时长追踪
+      secondsElapsed = 0;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+      }, 1000);
+
+      switchCard(3);
+    }
+
+    // 单选卡片交互组件 (前测与后测)
+    function selectRadio(questionKey, val, element) {
+      // 选中当前问题范围内的卡片，清除同级已选项
+      const siblingCards = element.parentElement.querySelectorAll('.option-card');
+      siblingCards.forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+
+      if (questionKey === 'q1') {
+        experimentData.preAnswers.ai_frequency = val;
+      } else if (questionKey === 'q2') {
+        experimentData.preAnswers.hallucination_reason = val;
+      } else if (questionKey === 'post_q1') {
+        experimentData.postAnswers.dependency_awareness = val;
+      }
+
+      // 验证是否进入下一步
+      checkStep3Validation();
+      checkStep5Validation();
+    }
+
+    function checkStep3Validation() {
+      const nextBtn = document.getElementById('step3Next');
+      if (experimentData.preAnswers.ai_frequency && experimentData.preAnswers.hallucination_reason) {
+        nextBtn.disabled = false;
+      }
+    }
+
+    // Step 3 -> Step 4
+    function goToStep4() {
+      switchCard(4);
+    }
+
+    // 阅读板块单选交互
+    function selectReadingAnswer(key, val, element) {
+      const siblingCards = element.parentElement.querySelectorAll('.option-card');
+      siblingCards.forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+
+      experimentData.readingAnswer = val;
+      
+      checkStep4Validation();
+    }
+
+    function checkStep4Validation() {
+      const nextBtn = document.getElementById('step4Next');
+      // 实验组核心规则：受试者必须至少向 AI 提问过一个问题，并答完了阅读理解常识，方可解锁后测！这对应了我们严苛的学术流程控制！
+      if (experimentData.readingAnswer && experimentData.chatLogs.length > 0) {
+        nextBtn.disabled = false;
+      }
+    }
+
+    // AI 辅助助手模拟回复库
+    const aiKnowledgeBase = {
+      '结构化认知溢出': '“结构化认知溢出”指的是在大语言模型辅助下，人类知识检索从传统的线性物理查阅拓宽为无界的向量相关性关联。这使得受试者能快速跳出原有的逻辑屏障，获得关联性的学术灵感与认知补充。',
+      '认知寄生': '“认知寄生”是指受试者在高频次、高可用性黑箱模型解答下，工作记忆与深度质疑意愿产生萎缩，减少去源头查证、交叉比对事实的思考习惯，类似于认知机能的“外部托管”。',
+      '技术社会学': '技术社会学重点关注技术不仅是客观的生产工具，还构建了新型的社会行动主体和权力关系。在这里，AI 扮演了受试者心智结构的“共生者”角色，重塑人类思维方式。',
+      'default': '这是一个极佳的问题！从我们实验设定的“结构化溢出”视角来看，您关注的是人机互构的底层关系。针对本材料，AI 能在宏观语义网络上为您提供聚合梳理，但为了防止学术幻觉，仍建议您在此阶段保持对细节的事实审查。'
+    };
+
+    function sendChatMessage() {
+      const inputEl = document.getElementById('chatInput');
+      const text = inputEl.value.trim();
+      if (!text) return;
+
+      const chatMessages = document.getElementById('chatMessages');
+
+      // 1. 渲染用户问题
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble user';
+      userBubble.innerText = text;
+      chatMessages.appendChild(userBubble);
+      inputEl.value = '';
+
+      // 记录数据
+      experimentData.chatLogs.push({ role: 'user', content: text, time: new Date().toLocaleTimeString() });
+
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      // 2. 模拟加载 AI 思考中...
+      setTimeout(() => {
+        let responseText = aiKnowledgeBase['default'];
+        
+        // 简单检索关键字来做拟真的应答
+        for (let key in aiKnowledgeBase) {
+          if (text.includes(key)) {
+            responseText = aiKnowledgeBase[key];
+            break;
+          }
+        }
+
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'chat-bubble ai';
+        aiBubble.innerText = responseText;
+        chatMessages.appendChild(aiBubble);
+
+        // 记录数据
+        experimentData.chatLogs.push({ role: 'assistant', content: responseText, time: new Date().toLocaleTimeString() });
+
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // 更新步骤 4 的按钮验证状态（至少要求问过一次）
+        checkStep4Validation();
+      }, 800);
+    }
+
+    // Step 4 -> Step 5
+    function goToStep5() {
+      switchCard(5);
+    }
+
+    // 验证开放反馈文本
+    function checkFeedbackText() {
+      experimentData.postAnswers.open_feedback = document.getElementById('feedbackText').value.trim();
+      checkStep5Validation();
+    }
+
+    function checkStep5Validation() {
+      const nextBtn = document.getElementById('step5Next');
+      if (experimentData.postAnswers.dependency_awareness && experimentData.postAnswers.open_feedback.length > 5) {
+        nextBtn.disabled = false;
+      }
+    }
+
+    // Step 5 -> Step 6 (展示成果预览与导出)
+    function goToStep6() {
+      clearInterval(timerInterval);
+      experimentData.durationSeconds = secondsElapsed;
+      
+      switchCard(6);
+
+      // 渲染最终数据预览
+      const jsonPreview = document.getElementById('dataPreview');
+      jsonPreview.innerText = JSON.stringify(experimentData, null, 2);
+    }
+
+    // 前进后退快捷辅助函数
+    function prevStep(targetStep) {
+      switchCard(targetStep);
+    }
+
+    // 一键复制功能
+    function copyJsonData() {
+      const dataStr = JSON.stringify(experimentData, null, 2);
+      navigator.clipboard.writeText(dataStr).then(() => {
+        const toast = document.getElementById('copyToast');
+        toast.style.display = 'flex';
+        setTimeout(() => {
+          toast.style.display = 'none';
+        }, 3000);
+      });
+    }
+
+    // 拟真 CSV 导出函数 (生成符合学术量化工具 SPSS/R 的数据格式)
+    function downloadCSV() {
+      const headers = [
+        'subjectId', 'durationSeconds', 'timestamp', 'consentAgreed',
+        'pre_ai_frequency', 'pre_hallucination_reason',
+        'readingAnswer', 'totalChatInteractions',
+        'post_dependency_awareness', 'post_open_feedback'
+      ];
+      
+      const row = [
+        experimentData.subjectId,
+        experimentData.durationSeconds,
+        experimentData.timestamp,
+        experimentData.consentAgreed ? 'Yes' : 'No',
+        experimentData.preAnswers.ai_frequency,
+        experimentData.preAnswers.hallucination_reason,
+        experimentData.readingAnswer,
+        experimentData.chatLogs.length / 2, // 一问一答算作一次完整交互
+        experimentData.postAnswers.dependency_awareness,
+        experimentData.postAnswers.open_feedback.replace(/"/g, '""')
+      ];
+
+      const csvContent = "\uFEFF" + [
+        headers.join(','),
+        row.map(val => `"${val}"`).join(',')
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", `survey_demo_data_${experimentData.subjectId}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
