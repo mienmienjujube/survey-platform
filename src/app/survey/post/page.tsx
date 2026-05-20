@@ -157,8 +157,16 @@ AI技术“复活”服务能满足悼念逝者的情感需求，不应“一棍
     return `你是本次调研中的“AI 智能助手”。
 1. 身份保密：严禁提及 DeepSeek、OpenAI 等品牌。回答：“我是本次调研系统内置的学术辅助助手。”
 2. 任务：在板块 1-3 必须基于材料回答；在板块 4 则可以利用通用知识库回答。
-3. 格式：禁止使用 Markdown。直接输出纯文本，分行显示。
-4. 评分：被要求评分时，必须针对具体项给出分值和理由。
+3. 严格独立：你当前仅拥有该板块的材料背景。严禁跨板块引用信息，也不要提及“之前讨论过的”或“接下来的内容”。
+4. 格式：禁止使用 Markdown。直接输出纯文本，分行显示。
+5. 逐项评分要求：当受试者要求评分时，请务必针对以下【20个具体维度】逐一给出 1-5 分的分值及理由。严禁合并或概括：
+   - [多样性]：1.多元见解 2.视角丰富度 3.信息来源多样性
+   - [相关性]：4.内容完整性 5.分析深度 6.议题聚焦度
+   - [伦理]：7.尊重权利 8.避免误导夸大 9.敏感话题负责任态度
+   - [公正性]：10.语气客观 11.平衡性 12.情感倾向性
+   - [可理解性]：13.比喻准确度 14.比喻易懂性 15.语言简洁度 16.逻辑连贯性
+   - [准确性]：17.事实准确性 18.事例支撑度 19.区分事实与观点
+   - [标题]：20.标题吸引力
 
 ${context}`;
   };
@@ -167,20 +175,26 @@ ${context}`;
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const validateStep = () => {
+  const validateStep = (s: number = step) => {
     const requiredKeys: Record<number, string[]> = {
       1: ['m1_div1', 'm1_div2', 'm1_div3', 'm1_rel1', 'm1_rel2', 'm1_rel3', 'm1_eth1', 'm1_eth2', 'm1_eth3', 'm1_fair1', 'm1_fair2', 'm1_fair3', 'm1_und1', 'm1_und2', 'm1_und3', 'm1_und4', 'm1_acc1', 'm1_acc2', 'm1_acc3', 'm1_title'],
       2: ['m2_div1', 'm2_div2', 'm2_div3', 'm2_rel1', 'm2_rel2', 'm2_rel3', 'm2_eth1', 'm2_eth2', 'm2_eth3', 'm2_fair1', 'm2_fair2', 'm2_fair3', 'm2_und1', 'm2_und2', 'm2_und3', 'm2_und4', 'm2_acc1', 'm2_acc2', 'm2_acc3', 'm2_title'],
       3: ['theory_1', 'theory_2'],
-      4: ['short_1', 'short_2'],
-      5: [] // feedback is optional
+      4: ['short_1', 'short_2']
     };
     
-    const keys = requiredKeys[step] || [];
+    const keys = requiredKeys[s] || [];
     for (const key of keys) {
       if (!formData[key] || formData[key].trim() === '') {
         return false;
       }
+    }
+    return true;
+  };
+
+  const validateAll = () => {
+    for (let i = 1; i <= 4; i++) {
+      if (!validateStep(i)) return false;
     }
     return true;
   };
@@ -243,8 +257,8 @@ ${context}`;
   };
 
   const handleSubmit = async () => {
-    if (!validateStep()) {
-      alert("请先完成本页所有必填题目！");
+    if (!validateAll()) {
+      alert("检测到部分题目未完成，请检查前面的步骤并确保所有题目均已作答。");
       return;
     }
 
@@ -341,21 +355,22 @@ ${context}`;
                 onClick={() => { if (!isLocked) { setStep(s.id); window.scrollTo({ top: 0, behavior: 'smooth' }); } }}
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '1rem', border: 'none', borderRadius: '0.5rem',
-                  background: isActive ? 'var(--primary-color)' : isLocked ? 'rgba(0,0,0,0.05)' : 'transparent',
+                  padding: '0.75rem 1rem', border: 'none', borderRadius: '8px',
+                  background: isActive ? 'var(--primary-color)' : 'transparent',
                   color: isActive ? 'white' : isLocked ? 'var(--text-muted)' : 'var(--text-main)',
                   cursor: isLocked ? 'not-allowed' : 'pointer',
-                  textAlign: 'left', fontWeight: isActive ? 'bold' : 'normal',
+                  textAlign: 'left', fontWeight: isActive ? '500' : '400',
                   transition: 'all 0.2s',
-                  opacity: isLocked ? 0.6 : 1
+                  opacity: isLocked ? 0.4 : 1,
+                  fontSize: '0.9rem'
                 }}
               >
-                <span style={{ fontSize: '0.95rem' }}>{s.title}</span>
+                <span>{s.title}</span>
                 {isLocked && (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                 )}
                 {!isLocked && s.id < maxStepReached && (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={isActive ? "white" : "var(--accent-color)"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isActive ? "white" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 )}
               </button>
             )
@@ -373,14 +388,14 @@ ${context}`;
             <h2 className="mb-4" style={{ borderBottom: '2px solid var(--border-color)', paddingBottom: '0.5rem' }}>阅读理解一：高端装备技术攻关突破</h2>
             <p className="text-muted mb-6">* 该部分请借助右侧 AI 辅助作答 *</p>
             
-            <div style={{ background: 'rgba(255,255,255,0.7)', padding: '2rem', borderRadius: '1.5rem', marginBottom: '3rem', border: '1px solid var(--border-color)', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-              <h3 className="text-center mb-6" style={{ fontSize: '1.5rem', lineHeight: '1.4' }}>为了机匣不再“卡脖子”<br/><span style={{fontSize:'1.2rem', color:'var(--text-muted)'}}>——我国首套重型五轴立式铣车机床攻关之路</span></h3>
-              <div style={{ fontSize: '1.05rem', lineHeight: '2', color: '#334155' }}>
+            <div style={{ background: '#fff', padding: '2rem', borderRadius: '12px', marginBottom: '3rem', border: '1px solid var(--border-color)', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+              <h3 className="text-center mb-6" style={{ fontSize: '1.4rem', lineHeight: '1.4', fontWeight: '700' }}>为了机匣不再“卡脖子”<br/><span style={{fontSize:'1.1rem', color:'var(--text-muted)', fontWeight: '400'}}>——我国首套重型五轴立式铣车机床攻关之路</span></h3>
+              <div style={{ fontSize: '1rem', lineHeight: '1.8', color: '#1d1d1f' }}>
                 <p style={{ textIndent: '2em', marginBottom: '1.5rem' }}>3月19日，由武汉重型机床集团有限公司（以下简称武重集团）牵头研制的“大型复杂薄壁回转构件的高精铣车复合柔性加工技术及装备”项目，顺利通过中国机械工程学会组织的科技成果鉴定，获得充分肯定。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1.5rem' }}>该技术研发之初瞄准的目标，是希望改变这样一个局面——近年来我国船舶工业快速发展，但作为船舶“心脏”的燃气轮机，其核心关键零件机匣的研制加工却长期受制于人。2016年，武重集团组建起一支年轻团队，针对这一“卡脖子”技术发起了攻关。</p>
                 
-                <p style={{ textIndent: '2em', fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>“国家需要，我们就干”</p>
-                <p style={{ textIndent: '2em', marginBottom: '1rem' }}>机匣类零件作为燃气轮机的支撑和关键受力零件，需要在高温、高压下工作，是影响燃气轮机抗冲击和抗振动性能的关键因子。</p>
+                <p style={{ textIndent: '2em', fontWeight: 'bold', fontSize: '1.05rem', color: '#000', marginBottom: '0.5rem' }}>“国家需要，我们就干”</p>
+                <p style={{ textIndent: '2em', marginBottom: '1rem' }}>机匣类零件作为燃气轮机的支撑 and 关键受力零件，需要在高温、高压下工作，是影响燃气轮机抗冲击和抗振动性能的关键因子。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>武重集团副总经理、装备技术研究院院长陈昳表示，燃气轮机机匣多为大直径薄壁件，最薄处只有1.5至3毫米，切削时极易变形，是燃气轮机上最难制造的零件之一。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>长期以来，我国大量机匣类零件只能采用数控立式车床和加工中心等设备分工序组合的方式加工，不但精度和工艺稳定性难以保证，而且成本高、效率低。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>陈昳介绍说，机匣加工需要多道工序，包括车、铣、钻、镗等。使用多种机床加工，每完成一道工序都要把机匣取下来，装夹到下一台机床上。薄壁零件一拆、一挪就变形了，重新装夹费时费力，稍有不慎就会影响加工精度，导致出现废品。</p>
@@ -388,14 +403,14 @@ ${context}`;
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>“国家需要，我们就干！”武重集团党委书记、董事长洪彰勇表示。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1.5rem' }}>2016年年初，武重集团争取到试制燃气轮机机匣加工设备样机的机会。集团制定了总体技术方案，确立了车铣复合工作台、高刚性高转速车铣复合刀架、高精度工作台交换系统等多项关键技术科研先导项目。</p>
                 
-                <p style={{ textIndent: '2em', fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>自力更生从“0”到“1”</p>
+                <p style={{ textIndent: '2em', fontWeight: 'bold', fontSize: '1.05rem', color: '#000', marginBottom: '0.5rem' }}>自力更生从“0”到“1”</p>
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>随着该项目科技攻关“路线图”逐步显现，一群年轻人，带着一股子冲劲，扛起了这一重担。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>要实现该项目所要求的一次装夹完成全部工序的复合、柔性加工机床，首先要实现五轴联动加工，这也是目前国际数控机床的最高水平。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>传统立式车铣机床多为三轴，指代表刀架水平移动的X轴、滑枕上下移动的Z轴、工作台上回转的C轴，共三个进给伺服轴。本项目的五轴则是在这三个进给轴基础上，增加了工作台前后移动的Y轴和位于滑枕末端摆角铣头的B轴。五轴联动，可以车削圆柱、圆锥、各种旋转曲面体，以及平面、沟槽、螺纹；搭配铣头等附件，还可以铣削平面、斜面，钻削垂直、水平或倾斜的孔。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>陈昳说，五轴技术一直被国外封锁。我国虽然研发过一些五轴机床产品，但主要为中小型机床。在满足重大装备制造需求的大型、重型车铣类机床领域，特别是具备回转工作台直线进给功能和重型车铣工位自动交换功能的五轴车铣复合加工中心，国内尚无先例。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1.5rem' }}>没有经验、没有图纸、没有专项人才。项目团队查阅了大量资料，唯一的收获是某次国际机床展宣传册上的照片。他们认识到，只能自力更生实现从“0”到“1”的突破。</p>
                 
-                <p style={{ textIndent: '2em', fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>不满足于精度达标</p>
+                <p style={{ textIndent: '2em', fontWeight: 'bold', fontSize: '1.05rem', color: '#000', marginBottom: '0.5rem' }}>不满足于精度达标</p>
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>那段时间，武重集团办公楼和厂房总有几盏灯彻夜长明。项目团队十几个人“5加2”“白加黑”地工作，一次次将技术方案推倒重来，为一环套一环的难题绞尽脑汁。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>除了五轴联动、柔性制造功能，他们还为该机床赋予了自我监测、智能诊断、自适应加工能力。例如，加工过程中如果机床刀具磨损，会导致工件受损作废，而该机床可以提前感知刀具磨损情况，自动更换刀具、附件等，甚至对温度变化等因素给加工精度带来的细微影响也能敏锐检测，并实现自动补偿。高智能化使得该机床运行时几乎不需要人工干预。陈昳说，普通重型机床，每台一般需要12人操作，但是该机床，一个人就可以管理4台。</p>
                 <p style={{ textIndent: '2em', marginBottom: '1rem' }}>经过近3年艰苦攻关，项目终于推进到样机验收前的最后一步——安装调试阶段。</p>
@@ -407,20 +422,15 @@ ${context}`;
               </div>
             </div>
 
-            <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '1rem', border: '1px solid #e2e8f0', marginBottom: '2rem' }}>
-              <h4 style={{ color: 'var(--primary-color)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                提示词示例（点击即可复制并填入右侧对话框）
+            <div style={{ padding: '1.25rem', background: '#f5f5f7', borderRadius: '12px', border: '1px solid var(--border-color)', marginBottom: '2rem' }}>
+              <h4 style={{ color: '#000', marginBottom: '0.75rem', fontSize: '0.95rem', fontWeight: '600' }}>
+                提示词示例（点击填入）
               </h4>
-              <p style={{ fontSize: '0.95rem', color: '#475569', marginBottom: '0.5rem' }}>您可以参考以下模板与 AI 进行对话：</p>
               <div 
                 onClick={() => applyPrompt("我是一名新闻与传播专业的学生，希望去深入对这则材料进行质量评估，具体包括文章对【多样性/相关性/伦理/公正性/可理解性/准确性/标题质量】几个维度的评价。评价的内容包括：（1）请你阅读材料后，根据提问进行评分。评分满分共5分，1分最低，5分最高。（2）请用通俗易懂的语言阐释打分依据。")}
-                style={{ background: 'white', padding: '1rem', borderRadius: '0.5rem', cursor: 'pointer', border: '1px dashed var(--primary-color)', transition: 'all 0.2s', fontSize: '0.9rem' }}
-                onMouseOver={e => e.currentTarget.style.background = '#f1f5f9'}
-                onMouseOut={e => e.currentTarget.style.background = 'white'}
+                style={{ background: 'white', padding: '1rem', borderRadius: '8px', cursor: 'pointer', border: '1px solid var(--border-color)', transition: 'all 0.2s', fontSize: '0.85rem', color: '#1d1d1f' }}
               >
-                “我是一名新闻与传播专业的学生，希望去深入对这则材料进行质量评估，具体包括文章对【多样性/相关性/伦理/公正性/可理解性/准确性/标题质量】几个维度的评价。
-评价的内容包括：（1）请你阅读材料后，根据提问进行评分。评分满分共5分，1分最低，5分最高。（2）请用通俗易懂的语言阐释打分依据。”
+                “我是一名新闻与传播专业的学生，希望去深入对这则材料进行质量评估，评价内容包括评分及依据。”
               </div>
             </div>
 
@@ -553,38 +563,38 @@ ${context}`;
             </div>
 
             <div style={{ padding: '1rem 0' }}>
-              <h4 className="mt-4 mb-4" style={{ fontSize: '1.25rem', color: 'var(--primary-hover)' }}>【多样性】</h4>
+              <h4 className="mt-4 mb-4" style={{ fontSize: '1.1rem', color: '#000', fontWeight: '600' }}>【多样性】</h4>
               <Likert name="m2_div1" label="1. 您认为材料体现多元见解和观点的程度如何？（如动物学、地质学、植物学交叉）" />
               <Likert name="m2_div2" label="2. 您认为材料在呈现多元视角的丰富程度如何？（如展现其多重研究价值）" />
               <Likert name="m2_div3" label="3. 您认为材料中信息来源多样性的程度如何？（如援引了《iScience》期刊及科研机构的成果）" />
 
-              <h4 className="mt-8 mb-4" style={{ fontSize: '1.25rem', color: 'var(--primary-hover)' }}>【相关性】</h4>
+              <h4 className="mt-8 mb-4" style={{ fontSize: '1.1rem', color: '#000', fontWeight: '600' }}>【相关性】</h4>
               <Likert name="m2_rel1" label="1. 您认为材料在涵盖主题的关键方面和提供必要背景信息方面，完整性如何？（如对粪化石从形成到命名、研究方法等均有阐述）" />
               <Likert name="m2_rel2" label="2. 您认为材料在对所呈现的信息进行分析、解释或提供深入见解方面的质量如何？（如孢粉学分析的作用）" />
               <Likert name="m2_rel3" label="3. 您认为材料聚焦于重要、相关议题而非杂乱内容的程度如何？（如聚焦在重建古生态和系统命名）" />
 
-              <h4 className="mt-8 mb-4" style={{ fontSize: '1.25rem', color: 'var(--primary-hover)' }}>【伦理】</h4>
+              <h4 className="mt-8 mb-4" style={{ fontSize: '1.1rem', color: '#000', fontWeight: '600' }}>【伦理】</h4>
               <Likert name="m2_eth1" label="1. 您认为材料在呈现方式上，是否尊重个人权利、避免歧视，并顾及潜在的伦理影响？" />
               <Likert name="m2_eth2" label="2. 材料中存在误导或夸大的倾向程度如何？能否避免引发公众不必要的恐慌或过高期望？" />
               <Likert name="m2_eth3" label="3. 如果材料涉及敏感话题，您认为报道是否以负责任的态度进行了呈现？" />
 
-              <h4 className="mt-8 mb-4" style={{ fontSize: '1.25rem', color: 'var(--primary-hover)' }}>【公正性】</h4>
+              <h4 className="mt-8 mb-4" style={{ fontSize: '1.1rem', color: '#000', fontWeight: '600' }}>【公正性】</h4>
               <Likert name="m2_fair1" label="1. 您认为材料在保持语气客观的程度如何？" />
               <Likert name="m2_fair2" label="2. 您认为材料在反映各方利益相关者的观点和利益方面，平衡性程度如何？" />
               <Likert name="m2_fair3" label="3. 您认为这篇材料整体情感倾向的程度如何？" />
 
-              <h4 className="mt-8 mb-4" style={{ fontSize: '1.25rem', color: 'var(--primary-hover)' }}>【可理解性】</h4>
+              <h4 className="mt-8 mb-4" style={{ fontSize: '1.1rem', color: '#000', fontWeight: '600' }}>【可理解性】</h4>
               <Likert name="m2_und1" label="1. 比喻准确度？（如“大鱼吃小鱼，小鱼吃虾米”）" />
               <Likert name="m2_und2" label="2. 比喻易懂性？" />
               <Likert name="m2_und3" label="3. 您认为材料的语言和表达方式，在简洁易懂程度方面如何？" />
               <Likert name="m2_und4" label="4. 您认为材料的整体结构和逻辑顺序，在清晰度和连贯性方面如何？" />
 
-              <h4 className="mt-8 mb-4" style={{ fontSize: '1.25rem', color: 'var(--primary-hover)' }}>【准确性】</h4>
+              <h4 className="mt-8 mb-4" style={{ fontSize: '1.1rem', color: '#000', fontWeight: '600' }}>【准确性】</h4>
               <Likert name="m2_acc1" label="1. 您认为材料中陈述的事实、数据和科学信息，在准确性方面如何？（如粪化石研究历史的阐述）" />
               <Likert name="m2_acc2" label="2. 您认为材料引用的事例支撑报道的程度如何？" />
               <Likert name="m2_acc3" label="3. 您认为材料是否清晰地区分了科学事实、研究发现与记者的观点或评论？" />
 
-              <h4 className="mt-8 mb-4" style={{ fontSize: '1.25rem', color: 'var(--primary-hover)' }}>【标题质量】</h4>
+              <h4 className="mt-8 mb-4" style={{ fontSize: '1.1rem', color: '#000', fontWeight: '600' }}>【标题质量】</h4>
               <Likert name="m2_title" label="1. 您觉得该材料标题《重大发现！中国科学家从3500万年前的粪便中，发现地球长这样——》的吸引力如何？" />
             </div>
 
@@ -733,33 +743,33 @@ ${context}`;
         flexDirection: 'column',
         padding: '1.5rem'
       }}>
-        <h3 className="mb-4" style={{ fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
-          智能助手
+        <h3 className="mb-4" style={{ fontSize: '1rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+          助手
         </h3>
         <p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '1rem' }}>
           （已内置当前材料文本，可参考左侧提示词提问）
         </p>
 
-        <div style={{ flex: 1, overflowY: 'auto', marginBottom: '1rem', padding: '0.5rem', background: 'rgba(255,255,255,0.4)', borderRadius: '0.5rem' }}>
-          {(() => {
-            const currentChat = step === 1 ? chat1 : step === 2 ? chat2 : step === 3 ? chat3 : chat4;
-            if (currentChat.length === 0) {
-              return <div className="text-center text-muted" style={{ marginTop: '2rem', fontSize: '0.9rem' }}>暂无对话，点击左侧示例或在下方输入问题。</div>;
-            }
-            return currentChat.map((msg, i) => (
-              <div key={i} className={msg.role === 'user' ? 'user-message' : 'ai-message'}>
-                <strong style={{ display: 'block', marginBottom: '0.25rem', color: msg.role === 'user' ? '#334155' : 'var(--primary-color)', fontSize: '0.85rem' }}>
-                  {msg.role === 'user' ? '您' : 'AI 助手'}
-                </strong>
-                <span style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem' }}>{msg.content}</span>
+        <div style={{ flex: 1, overflowY: 'auto', marginBottom: '1rem', padding: '0.5rem', background: '#fff', borderRadius: '8px' }}>
+          <div className="chat-container">
+            {(() => {
+              const currentChat = step === 1 ? chat1 : step === 2 ? chat2 : step === 3 ? chat3 : chat4;
+              if (currentChat.length === 0) {
+                return <div className="text-center text-muted" style={{ marginTop: '2rem', fontSize: '0.9rem' }}>暂无对话，可参考左侧提示词提问。</div>;
+              }
+              return currentChat.map((msg, i) => (
+                <div key={i} className={msg.role === 'user' ? 'user-message' : 'ai-message'}>
+                  <span style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</span>
+                </div>
+              ));
+            })()}
+            {isTyping && (
+              <div className="ai-message" style={{ background: '#f2f2f7', opacity: 0.6 }}>
+                <span className="dot-flashing">正在输入...</span>
               </div>
-            ));
-          })()}
-          {isTyping && (
-            <div className="ai-message text-muted" style={{ fontStyle: 'italic', fontSize: '0.85rem' }}>AI 正在思考中...</div>
-          )}
-          <div ref={chatEndRef} />
+            )}
+            <div ref={chatEndRef} />
+          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '0.5rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem', marginTop: 'auto' }}>

@@ -5,11 +5,14 @@ const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const { username, password } = await req.json();
+    let { username, password } = await req.json();
 
     if (!username || !password) {
       return NextResponse.json({ error: '请输入账号和密码' }, { status: 400 });
     }
+
+    username = username.trim();
+    password = password.trim();
 
     const subject = await prisma.subject.findUnique({
       where: { username }

@@ -4,8 +4,8 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const url = request.nextUrl;
 
-  // Protect /admin and /api/admin
-  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/admin')) {
+  // Protect /shoowjo and /api/shoowjo
+  if (url.pathname.startsWith('/shoowjo') || url.pathname.startsWith('/api/shoowjo')) {
     const authHeader = request.headers.get('authorization');
 
     if (!authHeader) {
@@ -17,20 +17,25 @@ export function middleware(request: NextRequest) {
       });
     }
 
-    const auth = authHeader.split(' ')[1];
-    const [user, pwd] = Buffer.from(auth, 'base64').toString().split(':');
+    try {
+      const auth = authHeader.split(' ')[1];
+      const decoded = Buffer.from(auth, 'base64').toString().split(':');
+      const user = decoded[0];
+      const pwd = decoded.slice(1).join(':'); // Handle passwords containing ':'
 
-    // Use environment variables for credentials
-    const adminUser = process.env.ADMIN_USER || 'admin';
-    const adminPass = process.env.ADMIN_PASSWORD || 'survey2026';
+      const adminUser = process.env.ADMIN_USER;
+      const adminPass = process.env.ADMIN_PASSWORD;
 
-    if (user !== adminUser || pwd !== adminPass) {
-      return new NextResponse('Invalid Credentials', {
-        status: 401,
-        headers: {
-          'WWW-Authenticate': 'Basic realm="Admin Access"',
-        },
-      });
+      if (!adminUser || !adminPass || user !== adminUser || pwd !== adminPass) {
+        return new NextResponse('Invalid Credentials', {
+          status: 401,
+          headers: {
+            'WWW-Authenticate': 'Basic realm="Admin Access"',
+          },
+        });
+      }
+    } catch (e) {
+      return new NextResponse('Invalid Authorization Format', { status: 400 });
     }
   }
 
@@ -38,5 +43,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*'],
+  matcher: ['/shoowjo/:path*', '/api/shoowjo/:path*'],
 };

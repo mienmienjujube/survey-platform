@@ -33,37 +33,37 @@ export default function ConsentPage() {
     <div className="container" style={{ maxWidth: '800px', display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '85vh', padding: '2rem' }}>
       <div className="glass-panel fade-in" style={{ padding: '3rem' }}>
         <div style={{ background: 'rgba(255,255,255,0.4)', padding: '2rem', borderRadius: '1.5rem', marginBottom: '2.5rem', fontSize: '1.05rem', lineHeight: '2' }}>
-          <h1 className="text-center mb-8" style={{ fontSize: '2.2rem', color: 'var(--primary-hover)' }}>知情同意书</h1>
+          <h1 className="text-center mb-8" style={{ fontSize: '2.2rem', color: '#000' }}>知情同意书</h1>
           
-          <div style={{ color: '#334155' }}>
+          <div style={{ color: '#1d1d1f' }}>
             <p style={{ marginBottom: '1.5rem' }}><strong>尊敬的志愿者：</strong><br/>您好！感谢您参与“生成式人工智能认知与使用行为”研究课题的调研。本知情同意书将帮助您了解该研究的目的、程序及您的权利，请您仔细阅读。</p>
             
             <section style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ color: 'var(--primary-color)', marginBottom: '0.5rem' }}>一、研究背景与目的</h3>
-              <p>本研究由苏州大学科技传播研究中心发起，旨在了解公众对生成式AI工具的认知程度、使用意愿及态度倾向。</p>
+              <h3 style={{ color: '#000', marginBottom: '0.5rem', fontSize: '1.1rem' }}>一、研究背景与目的</h3>
+              <p>本研究由研究小组发起，旨在了解公众对生成式AI工具的认知程度、使用意愿及态度倾向。</p>
             </section>
-
+ 
             <section style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ color: 'var(--primary-color)', marginBottom: '0.5rem' }}>二、研究内容与程序</h3>
+              <h3 style={{ color: '#000', marginBottom: '0.5rem', fontSize: '1.1rem' }}>二、研究内容与程序</h3>
               <p>1. 调研方式：在线问卷填写。<br/>2. 问卷耗时：约60分钟。<br/>3. 问卷步骤：基本信息、基准测试、AI 辅助阅读理解、材料分析及反馈。</p>
             </section>
-
+ 
             <section style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ color: 'var(--primary-color)', marginBottom: '0.5rem' }}>三、隐私保护与数据管理</h3>
+              <h3 style={{ color: '#000', marginBottom: '0.5rem', fontSize: '1.1rem' }}>三、隐私保护与数据管理</h3>
               <p>所有原始数据将进行匿名或编号处理，仅用于学术分析，保存期限不超过5年，不会泄露您的个人身份信息。</p>
             </section>
-
+ 
             <section style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ color: 'var(--primary-color)', marginBottom: '0.5rem' }}>四、参与者权利</h3>
+              <h3 style={{ color: '#000', marginBottom: '0.5rem', fontSize: '1.1rem' }}>四、参与者权利</h3>
               <p>您的参与完全自愿。在调研过程中，您可以随时选择中止或退出，无需提供任何理由，已填写的数据将根据您的意愿保留或删除。</p>
             </section>
-
+ 
             <section style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ color: 'var(--primary-color)', marginBottom: '0.5rem' }}>五、联系方式</h3>
-              <p>如果您对本研究有任何疑问，请联系研究负责人：<br/><strong>程曦</strong> 邮箱：fxchxi@suda.edu.cn</p>
+              <h3 style={{ color: '#000', marginBottom: '0.5rem', fontSize: '1.1rem' }}>五、联系方式</h3>
+              <p>如果您对本研究有任何疑问，请联系研究小组负责人：<br/><strong>[研究负责人]</strong> 邮箱：[您的联系邮箱]</p>
             </section>
-
-            <p style={{ marginTop: '2rem', color: 'var(--accent-color)', fontWeight: 600, borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
+ 
+            <p style={{ marginTop: '2rem', color: 'var(--text-muted)', fontSize: '0.9rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
               * 点击下方按钮代表您已充分知晓知情同意书的全部内容，且同意参加本次调研。
             </p>
           </div>

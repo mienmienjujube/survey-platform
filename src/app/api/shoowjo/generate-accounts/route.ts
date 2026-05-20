@@ -34,7 +34,11 @@ export async function POST(req: Request) {
       data: accounts
     });
 
-    return NextResponse.json({ success: true, count: accounts.length });
+    return NextResponse.json({ 
+      success: true, 
+      count: accounts.length,
+      accounts: accounts // Return the accounts for distribution
+    });
   } catch (error) {
     console.error('Failed to generate accounts:', error);
     return NextResponse.json({ error: 'Failed to generate accounts' }, { status: 500 });
