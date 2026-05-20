@@ -18,7 +18,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             // Skip anti-tamper on admin pages
-            if (window.location.pathname.startsWith('/shoowjo')) return;
+            if (window.location.pathname.startsWith('/admin')) return;
 
             // Disable right click
             document.addEventListener('contextmenu', e => e.preventDefault());

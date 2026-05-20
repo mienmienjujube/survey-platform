@@ -36,7 +36,7 @@ try {
 # 4. Start the server
 Write-Host "`n[+] Starting server..." -ForegroundColor Green
 Write-Host "[+] ACCESS URL: http://$($ip):$port" -ForegroundColor Green
-Write-Host "[+] ADMIN URL:  http://$($ip):$port/shoowjo" -ForegroundColor Yellow
+Write-Host "[+] ADMIN URL:  http://$($ip):$port/admin" -ForegroundColor Yellow
 Write-Host "[!] KEEP THIS WINDOW OPEN.`n"
 
 $env:NODE_OPTIONS = "--max-old-space-size=4096"

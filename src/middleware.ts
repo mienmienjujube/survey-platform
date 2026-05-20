@@ -4,8 +4,8 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const url = request.nextUrl;
 
-  // Protect /shoowjo and /api/shoowjo
-  if (url.pathname.startsWith('/shoowjo') || url.pathname.startsWith('/api/shoowjo')) {
+  // Protect /admin and /api/admin
+  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/admin')) {
     const authHeader = request.headers.get('authorization');
 
     if (!authHeader) {
@@ -43,5 +43,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/shoowjo/:path*', '/api/shoowjo/:path*'],
+  matcher: ['/admin/:path*', '/api/admin/:path*'],
 };

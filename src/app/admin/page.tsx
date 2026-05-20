@@ -14,7 +14,7 @@ export default function AdminPage() {
   // Fetch subjects and potential local IP (from window.location)
   const fetchSubjects = async () => {
     try {
-      const res = await fetch('/api/shoowjo/data');
+      const res = await fetch('/api/admin/data');
       if (res.ok) {
         const data = await res.json();
         setSubjects(data);
@@ -32,7 +32,7 @@ export default function AdminPage() {
   }, []);
 
   const handleExport = (format: 'csv' | 'xlsx') => {
-    window.location.href = `/api/shoowjo/export?format=${format}`;
+    window.location.href = `/api/admin/export?format=${format}`;
   };
 
   const downloadCSV = (data: any[], filename: string) => {
@@ -58,7 +58,7 @@ export default function AdminPage() {
     setLoading(true);
     setMessage('');
     try {
-      const res = await fetch('/api/shoowjo/generate-accounts', {
+      const res = await fetch('/api/admin/generate-accounts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ count: genCount })
@@ -83,7 +83,7 @@ export default function AdminPage() {
     if (!confirm('再次确认：此操作不可恢复，确认执行？')) return;
 
     try {
-      const res = await fetch('/api/shoowjo/clear-data', { method: 'POST' });
+      const res = await fetch('/api/admin/clear-data', { method: 'POST' });
       if (res.ok) {
         setMessage('所有数据已成功清空');
         setSubjects([]);
@@ -99,7 +99,7 @@ export default function AdminPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('确定要删除该账号及其所有答题数据吗？此操作不可逆。')) return;
     try {
-      const res = await fetch('/api/shoowjo/delete-account', {
+      const res = await fetch('/api/admin/delete-account', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id })
