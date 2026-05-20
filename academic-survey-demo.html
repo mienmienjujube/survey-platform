@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>智能学术实验问卷平台 - 交互体验演示</title>
+  <title>智能学术实验问卷平台 - 完整流程学术演示</title>
   
   <!-- 引入现代高端字体 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,7 +50,7 @@
     /* 顶部进度条 */
     .progress-container {
       width: 100%;
-      max-width: 900px;
+      max-width: 1000px;
       margin-bottom: 2rem;
       display: flex;
       justify-content: space-between;
@@ -79,8 +79,8 @@
       transform: translateY(-50%);
       z-index: 2;
       border-radius: 2px;
-      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       width: 0%;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .progress-step {
@@ -130,10 +130,10 @@
       font-weight: 600;
     }
 
-    /* 核心毛玻璃卡片 */
+    /* 核心卡片 */
     .glass-card {
       width: 100%;
-      max-width: 900px;
+      max-width: 1000px;
       background: var(--glass-bg);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
@@ -141,10 +141,9 @@
       border-radius: var(--card-radius);
       padding: 3rem;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--glass-highlight);
-      display: none; /* 由 JS 控制显隐 */
+      display: none;
       animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
-      overflow: hidden;
     }
 
     .glass-card.active {
@@ -162,7 +161,6 @@
       }
     }
 
-    /* 渐变发光装饰球 */
     .glow-sphere {
       position: absolute;
       width: 300px;
@@ -186,10 +184,10 @@
       background: var(--accent);
     }
 
-    /* 文字排版 */
-    h1, h2, h3 {
+    h1, h2, h3, h4 {
       font-weight: 600;
       letter-spacing: -0.02em;
+      color: white;
     }
 
     h1 {
@@ -202,9 +200,18 @@
     }
 
     h2 {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       margin-bottom: 1.5rem;
-      color: #fff;
+      border-bottom: 2px solid var(--glass-border);
+      padding-bottom: 0.5rem;
+    }
+
+    h4 {
+      font-size: 1.1rem;
+      margin: 1.8rem 0 0.8rem 0;
+      color: #a5b4fc;
+      border-left: 3px solid var(--primary);
+      padding-left: 0.6rem;
     }
 
     p {
@@ -213,55 +220,82 @@
       margin-bottom: 1rem;
     }
 
-    /* 表单组件 */
     .form-group {
-      margin-bottom: 1.8rem;
+      margin-bottom: 2rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      padding: 1.5rem;
+      border-radius: 16px;
     }
 
     .form-label {
       display: block;
-      font-size: 0.95rem;
-      font-weight: 500;
-      margin-bottom: 0.6rem;
-      color: #e5e7eb;
-    }
-
-    .input-text {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 0.9rem 1.2rem;
-      color: white;
       font-size: 1rem;
-      transition: all 0.3s;
-      outline: none;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      color: #f3f4f6;
+      line-height: 1.5;
     }
 
-    .input-text:focus {
+    /* 李克特5量表 */
+    .likert-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    .likert-option {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 0.7rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .likert-option:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: white;
+    }
+
+    .likert-option.selected {
+      background: rgba(99, 102, 241, 0.15);
       border-color: var(--primary);
-      box-shadow: 0 0 10px rgba(99, 102, 241, 0.25);
-      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
     }
 
-    /* 交互式选择项 */
+    /* 多选题与单选题卡片 */
     .option-card-group {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 0.8rem;
-      margin-bottom: 1.5rem;
+      gap: 0.6rem;
+    }
+
+    .option-card-group.grid-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 640px) {
+      .option-card-group.grid-2 {
+        grid-template-columns: 1fr;
+      }
     }
 
     .option-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--glass-border);
       border-radius: 12px;
-      padding: 1rem 1.2rem;
+      padding: 0.9rem 1.2rem;
       cursor: pointer;
       display: flex;
       align-items: center;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
+      transition: all 0.3s ease;
     }
 
     .option-card:hover {
@@ -270,9 +304,8 @@
     }
 
     .option-card.selected {
-      background: rgba(99, 102, 241, 0.1);
+      background: rgba(99, 102, 241, 0.12);
       border-color: var(--primary);
-      box-shadow: inset 0 0 0 1px var(--primary);
     }
 
     .option-circle {
@@ -280,10 +313,11 @@
       height: 18px;
       border-radius: 50%;
       border: 2px solid #4b5563;
-      margin-right: 1rem;
+      margin-right: 0.8rem;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
       transition: all 0.3s;
     }
 
@@ -300,12 +334,33 @@
       background: white;
     }
 
-    .option-text {
-      font-size: 0.95rem;
-      color: #e5e7eb;
+    /* 复选框样式 */
+    .option-card.checkbox.selected .option-circle {
+      border-radius: 4px;
+    }
+    .option-card.checkbox .option-circle {
+      border-radius: 4px;
     }
 
-    /* 按钮组件 */
+    .input-text {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.8rem 1.2rem;
+      color: white;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s;
+      resize: vertical;
+    }
+
+    .input-text:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.25);
+    }
+
+    /* 按钮样式 */
     .btn-group {
       display: flex;
       justify-content: space-between;
@@ -327,7 +382,6 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 15px var(--primary-glow);
-      text-decoration: none;
     }
 
     .btn:hover:not(:disabled) {
@@ -336,13 +390,9 @@
       filter: brightness(1.1);
     }
 
-    .btn:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
     .btn:disabled {
-      background: #374151;
-      color: #9ca3af;
+      background: #27272a;
+      color: #71717a;
       cursor: not-allowed;
       box-shadow: none;
       opacity: 0.5;
@@ -358,67 +408,105 @@
     .btn-secondary:hover {
       background: rgba(255, 255, 255, 0.05);
       color: white;
-      border-color: rgba(255, 255, 255, 0.2);
     }
 
-    /* 学术阅读与AI辅助布局 (双栏) */
-    .experiment-container {
+    /* 学术阅读文章排版 */
+    .article-box {
+      background: rgba(255, 255, 255, 0.95);
+      color: #1c1c1e;
+      padding: 2.5rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      line-height: 1.8;
+      font-size: 0.98rem;
+    }
+
+    .article-box p {
+      color: #2c2c2e;
+      text-indent: 2em;
+      margin-bottom: 1.2rem;
+    }
+
+    .article-box h3 {
+      color: #111;
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    .article-box h4 {
+      border: none;
+      color: #111;
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.8rem 0;
+      padding-left: 0;
+      font-weight: 600;
+    }
+
+    .article-box figure {
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .article-box figure img {
+      max-width: 70%;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .article-box figcaption {
+      margin-top: 0.6rem;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    /* 双栏后测交互布局 */
+    .split-layout {
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
       gap: 2rem;
-      height: 520px;
       margin-top: 1rem;
     }
 
     @media (max-width: 768px) {
-      .experiment-container {
+      .split-layout {
         grid-template-columns: 1fr;
-        height: auto;
       }
     }
 
-    .reading-panel {
+    .scroll-panel {
+      height: 600px;
+      overflow-y: auto;
       background: rgba(0, 0, 0, 0.2);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
       padding: 1.5rem;
-      overflow-y: auto;
-      height: 100%;
-      line-height: 1.8;
-      font-size: 0.95rem;
-      color: #d1d5db;
-    }
-
-    .reading-panel p {
-      margin-bottom: 1.2rem;
-    }
-
-    .reading-panel strong {
-      color: white;
     }
 
     .chat-panel {
+      height: 600px;
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
       display: flex;
       flex-direction: column;
-      height: 100%;
       overflow: hidden;
     }
 
     .chat-header {
-      background: rgba(255, 255, 255, 0.03);
-      padding: 0.8rem 1.2rem;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.9rem 1.2rem;
       border-bottom: 1px solid var(--glass-border);
       display: flex;
       align-items: center;
-      gap: 0.8rem;
+      gap: 0.6rem;
     }
 
-    .ai-badge {
-      width: 10px;
-      height: 10px;
+    .chat-header .dot {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: var(--success);
       box-shadow: 0 0 8px var(--success);
@@ -443,10 +531,10 @@
 
     .chat-bubble.ai {
       background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.05);
       color: #e5e7eb;
       align-self: flex-start;
       border-top-left-radius: 2px;
+      border: 1px solid rgba(255,255,255,0.03);
     }
 
     .chat-bubble.user {
@@ -455,6 +543,20 @@
       align-self: flex-end;
       border-top-right-radius: 2px;
       box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+    }
+
+    .prompt-suggestion-box {
+      padding: 0.8rem;
+      background: rgba(99, 102, 241, 0.07);
+      border-top: 1px solid var(--glass-border);
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: #a5b4fc;
+      transition: background 0.2s;
+    }
+
+    .prompt-suggestion-box:hover {
+      background: rgba(99, 102, 241, 0.15);
     }
 
     .chat-input-area {
@@ -474,11 +576,6 @@
       color: white;
       outline: none;
       font-size: 0.9rem;
-      transition: border 0.3s;
-    }
-
-    .chat-input:focus {
-      border-color: var(--primary);
     }
 
     .chat-send-btn {
@@ -492,15 +589,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s;
     }
 
-    .chat-send-btn:hover {
-      filter: brightness(1.1);
-      transform: scale(1.05);
-    }
-
-    /* 顶部的学术纯矢量 logo */
     .academic-logo {
       width: 70px;
       height: 70px;
@@ -514,44 +604,18 @@
       border: 1px solid rgba(255,255,255,0.05);
     }
 
-    /* 同意书特殊底色框 */
     .consent-box {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--glass-border);
       padding: 1.8rem;
       border-radius: 16px;
-      max-height: 380px;
+      max-height: 350px;
       overflow-y: auto;
       font-size: 0.95rem;
       line-height: 1.8;
       margin-bottom: 2rem;
     }
 
-    .consent-box h3 {
-      font-size: 1.1rem;
-      margin: 1.5rem 0 0.5rem 0;
-      color: white;
-    }
-
-    .consent-box h3:first-of-type {
-      margin-top: 0;
-    }
-
-    /* 单独提示区域 */
-    .toast {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid var(--success);
-      color: #34d399;
-      padding: 0.8rem 1.2rem;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-      display: none;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    /* 导出数据大段预览 */
     .json-preview {
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid var(--glass-border);
@@ -564,176 +628,430 @@
       overflow-y: auto;
       white-space: pre-wrap;
       margin-top: 1rem;
-      text-align: left;
+    }
+
+    .toast {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--success);
+      color: #34d399;
+      padding: 0.8rem 1.2rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
     }
   </style>
 </head>
 <body>
 
-  <!-- 顶部进度指示条 -->
+  <!-- 进度指示条 -->
   <div class="progress-container">
     <div class="progress-bar-bg"></div>
     <div class="progress-bar-active" id="progressBar"></div>
     
-    <div class="progress-step active" id="pStep1">
-      1 <span class="step-label">登录</span>
-    </div>
-    <div class="progress-step" id="pStep2">
-      2 <span class="step-label">知情同意</span>
-    </div>
-    <div class="progress-step" id="pStep3">
-      3 <span class="step-label">前测阶段</span>
-    </div>
-    <div class="progress-step" id="pStep4">
-      4 <span class="step-label">阅读与AI</span>
-    </div>
-    <div class="progress-step" id="pStep5">
-      5 <span class="step-label">后测反馈</span>
-    </div>
-    <div class="progress-step" id="pStep6">
-      6 <span class="step-label">实验完成</span>
-    </div>
+    <div class="progress-step active" id="pStep1">1 <span class="step-label">受试登录</span></div>
+    <div class="progress-step" id="pStep2">2 <span class="step-label">知情同意</span></div>
+    <div class="progress-step" id="pStep3">3 <span class="step-label">第一阶段(前测)</span></div>
+    <div class="progress-step" id="pStep4">4 <span class="step-label">阶段过渡</span></div>
+    <div class="progress-step" id="pStep5">5 <span class="step-label">第二阶段(后测)</span></div>
+    <div class="progress-step" id="pStep6">6 <span class="step-label">数据结算</span></div>
   </div>
 
-  <!-- 主卡片容器 -->
-  <div style="width:100%; max-width:900px; position:relative;">
+  <!-- 主卡片 -->
+  <div style="width:100%; max-width:1000px; position:relative;">
     <div class="glow-sphere glow-sphere-1"></div>
     <div class="glow-sphere glow-sphere-2"></div>
 
-    <!-- Step 1: 登录界面 -->
+    <!-- Step 1: 登录页 -->
     <div class="glass-card active" id="step1Card">
       <div class="academic-logo">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
       </div>
-      <h1>学术实验问卷平台</h1>
-      <p style="text-align: center; margin-top: -1.5rem; margin-bottom: 2rem;">前后测认知对比与交互行为智能追踪系统</p>
+      <h1>智能学术实验问卷平台</h1>
+      <p style="text-align: center; margin-top: -1.5rem; margin-bottom: 2rem;">AIGC对用户认知和批判性思维影响评估系统 (双阶段对比版)</p>
       
-      <div class="form-group" style="max-width: 400px; margin: 0 auto 1.5rem auto;">
-        <label class="form-label" for="subjectId">请输入您的受试者编号 (主试提供)</label>
+      <div class="form-group" style="max-width: 400px; margin: 0 auto 1.5rem auto; border:none; background:none; padding:0;">
+        <label class="form-label" for="subjectId" style="text-align:center;">请输入您的受试者编号 (主试提供)</label>
         <input type="text" id="subjectId" class="input-text" placeholder="例如: SUB-2026-001" value="SUB-DEMO-99">
       </div>
       
-      <div style="text-align: center; margin-top: 2rem;">
-        <button class="btn" onclick="goToStep2()">开始实验项目</button>
+      <div style="text-align: center; margin-top: 2.5rem;">
+        <button class="btn" onclick="goToStep2()">进入知情同意书</button>
       </div>
     </div>
 
-    <!-- Step 2: 知情同意书 -->
+    <!-- Step 2: 同意书 -->
     <div class="glass-card" id="step2Card">
       <h2>知情同意书</h2>
-      <p style="margin-bottom: 1.5rem;">请您在开始前仔细阅读本实验的相关隐私权条款和数据规范：</p>
+      <p style="margin-bottom: 1.5rem;">开始问卷前，请仔细阅读以下受试者知情条款：</p>
       
       <div class="consent-box">
         <h3>一、研究背景与目的</h3>
-        <p>本研究由研究小组发起，旨在客观评估生成式人工智能（AI）工具在知识获取、辅助学习和批判性思维启发过程中的中介效用，并追踪探索人类在智能化环境下的信息甄别能力。</p>
+        <p>本研究由课题组发起，旨在探究生成式人工智能（AI）工具的使用对人类在复杂论述文本阅读理解中的质量评估表现、批判性思维倾向及信息关联检索偏好的中介影响。</p>
         
-        <h3>二、研究程序与实验步骤</h3>
-        <p>1. 问卷填答：您需要先完成基准前测问卷，这包括认知常识判断和基本人口学背景调查。<br/>
-        2. 学术阅读与交互：您将被提供一篇深度材料，并在阅读过程中被授权使用我们的内置 AI 对话助手，向其请教任何关于文本背景、结构或名词的疑问。<br/>
-        3. 认知后测：阅读完毕后，您将接受针对阅读材料的后测评估以及实验反馈问卷。</p>
+        <h3>二、研究过程</h3>
+        <p>1. **第一阶段 (前测问卷)**：在完全无AI辅助的环境下，您将填写基本使用习惯，并阅读三篇复杂学术文章，针对其中的多样性、准确性、伦理等维度完成评价打分。<br/>
+        2. **过渡阶段**：提供后台算法状态校准机制。<br/>
+        3. **第二阶段 (后测问卷)**：在此阶段，您将重新阅读文章，但可以使用我们精心配置并进行上下文隔离的**内置 AI 学术助手**。助手会为您解答各种技术概念，帮助您完善打分质量。</p>
         
-        <h3>三、隐私保障与数据脱敏声明</h3>
-        <p>1. 本平台绝对保证您的数据安全。我们不会以任何形式索要您的真实姓名、手机号等强身份关联信息。<br/>
-        2. 您与 AI 的全部对话历史仅会在脱敏、隐藏真实 IP 后，作为人机交互日志记录于数据库中，仅限本项目的科研质性质化编码和定量分析使用，保存年限不超过5年，期满自动物理销毁。</p>
-        
-        <h3>四、自愿参与及中途退出权</h3>
-        <p>您的参与行为是百分之百自愿的。实验过程中，您可以随时在不受任何连带负面影响的情况下中途关闭浏览器退出，已保存的临时进度将自动从服务端被删除。</p>
+        <h3>三、数据隐私承诺</h3>
+        <p>本系统严格遵守学术伦理。我们绝对不收集您的姓名、电话等任何强个人特征数据。您的全部回答和对话记录将自动分配哈希标识，以脱敏数据形式写入数据库。数据仅限科研量化分析使用。</p>
       </div>
 
       <div style="text-align: center;">
-        <button class="btn" id="agreeBtn" disabled onclick="goToStep3()">请认真阅读 (5s)</button>
+        <button class="btn" id="agreeBtn" disabled onclick="goToStep3()">请仔细阅读 (5s)</button>
       </div>
     </div>
 
-    <!-- Step 3: 前测基本信息调查 -->
+    <!-- Step 3: 前测问卷 (整合为5个部分切换) -->
     <div class="glass-card" id="step3Card">
-      <h2>阶段一：基准测试与基本调查 (前测)</h2>
-      <p style="margin-bottom: 2rem;">请如实填写您在日常学习与研究中的基本习惯，这非常关键：</p>
-      
-      <div class="form-group">
-        <label class="form-label">1. 您使用生成式人工智能工具（如 ChatGPT、DeepSeek、Claude 等）的频率如何？</label>
-        <div class="option-card-group">
-          <div class="option-card" onclick="selectRadio('q1', 'always', this)">
-            <div class="option-circle"></div>
-            <div class="option-text">每天高频使用 (多次以上)</div>
+      <h2 style="display:flex; justify-content:space-between; align-items:center;">
+        <span>第一阶段：认知基准测试 (前测)</span>
+        <span style="font-size:0.9rem; color:#a5b4fc; background:rgba(99,102,241,0.1); padding:0.3rem 0.8rem; border-radius:20px;" id="preSubTab">当前步骤: 一、基本信息</span>
+      </h2>
+      <p style="margin-bottom: 2rem;">注意：前测阶段系统**没有**开放 AI 助手，请凭您自己真实的直觉独立作答。</p>
+
+      <!-- 前测步骤1：基本信息 -->
+      <div id="preStepTab1" class="pre-tab-content">
+        <h4>一、基本信息调查</h4>
+        
+        <div class="form-group">
+          <label class="form-label">1. 您使用生成式AI工具（如ChatGPT、Deepseek等）的频率？</label>
+          <div class="likert-group" data-key="freq">
+            <div class="likert-option" onclick="selectLikert('freq', '1', this)">1 (极少)</div>
+            <div class="likert-option" onclick="selectLikert('freq', '2', this)">2</div>
+            <div class="likert-option" onclick="selectLikert('freq', '3', this)">3</div>
+            <div class="likert-option" onclick="selectLikert('freq', '4', this)">4</div>
+            <div class="likert-option" onclick="selectLikert('freq', '5', this)">5 (极频)</div>
           </div>
-          <div class="option-card" onclick="selectRadio('q1', 'sometimes', this)">
-            <div class="option-circle"></div>
-            <div class="option-text">每周偶尔使用一次或几次</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">2. 您最常使用AI工具的目的是什么？[多选]</label>
+          <div class="option-card-group checkbox-group" data-key="purpose">
+            <div class="option-card checkbox" onclick="toggleCheckbox('purpose', '完成课程作业或学习辅导', this)">
+              <div class="option-circle"></div><span class="option-text">完成课程作业或学习辅导</span>
+            </div>
+            <div class="option-card checkbox" onclick="toggleCheckbox('purpose', '翻译、润色或学术写作支持', this)">
+              <div class="option-circle"></div><span class="option-text">翻译、润色或学术写作支持</span>
+            </div>
+            <div class="option-card checkbox" onclick="toggleCheckbox('purpose', '获取新知识或扩展学习兴趣', this)">
+              <div class="option-circle"></div><span class="option-text">获取新知识或扩展学习兴趣</span>
+            </div>
+            <div class="option-card checkbox" onclick="toggleCheckbox('purpose', '出于好奇探索AI功能', this)">
+              <div class="option-circle"></div><span class="option-text">出于好奇探索AI功能</span>
+            </div>
+            <div class="option-card checkbox" onclick="toggleCheckbox('purpose', '其他', this)">
+              <div class="option-circle"></div><span class="option-text">其他</span>
+            </div>
           </div>
-          <div class="option-card" onclick="selectRadio('q1', 'rarely', this)">
-            <div class="option-circle"></div>
-            <div class="option-text">极少使用 / 仅听说过概念</div>
+          <input type="text" id="purpose_other" class="input-text" placeholder="请写出其他目的..." style="margin-top:0.8rem; display:none;" oninput="saveText('purpose_other', this.value)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">3. 您对“生成式人工智能”的了解程度？</label>
+          <div class="likert-group" data-key="knowledge">
+            <div class="likert-option" onclick="selectLikert('knowledge', '1', this)">1 (完全不了解)</div>
+            <div class="likert-option" onclick="selectLikert('knowledge', '2', this)">2</div>
+            <div class="likert-option" onclick="selectLikert('knowledge', '3', this)">3</div>
+            <div class="likert-option" onclick="selectLikert('knowledge', '4', this)">4</div>
+            <div class="likert-option" onclick="selectLikert('knowledge', '5', this)">5 (极度掌握)</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">4. 您是否能区分Deepseek与ChatGPT等主流AI工具的核心差异？</label>
+          <div class="likert-group" data-key="diff">
+            <div class="likert-option" onclick="selectLikert('diff', '1', this)">1 (完全分不清)</div>
+            <div class="likert-option" onclick="selectLikert('diff', '2', this)">2</div>
+            <div class="likert-option" onclick="selectLikert('diff', '3', this)">3</div>
+            <div class="likert-option" onclick="selectLikert('diff', '4', this)">4</div>
+            <div class="likert-option" onclick="selectLikert('diff', '5', this)">5 (分得非常清)</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">5. 您目前常用的生成式AI工具是哪些？[多选]</label>
+          <div class="option-card-group checkbox-group grid-2" data-key="tools">
+            <div class="option-card checkbox" onclick="toggleCheckbox('tools', 'ChatGPT', this)"><div class="option-circle"></div><span>ChatGPT</span></div>
+            <div class="option-card checkbox" onclick="toggleCheckbox('tools', 'Gemini', this)"><div class="option-circle"></div><span>Gemini</span></div>
+            <div class="option-card checkbox" onclick="toggleCheckbox('tools', 'Claude', this)"><div class="option-circle"></div><span>Claude</span></div>
+            <div class="option-card checkbox" onclick="toggleCheckbox('tools', 'Deepseek', this)"><div class="option-circle"></div><span>Deepseek</span></div>
+            <div class="option-card checkbox" onclick="toggleCheckbox('tools', '豆包', this)"><div class="option-circle"></div><span>豆包</span></div>
+            <div class="option-card checkbox" onclick="toggleCheckbox('tools', '其他', this)"><div class="option-circle"></div><span>其他</span></div>
+          </div>
+          <input type="text" id="tools_other" class="input-text" placeholder="请输入其他常用工具名称..." style="margin-top:0.8rem; display:none;" oninput="saveText('tools_other', this.value)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">6. 您是否愿意继续参与本课题后续的匿名访谈研究？</label>
+          <div class="option-card-group" data-key="interview">
+            <div class="option-card" onclick="selectPreRadio('interview', 'no', this)"><div class="option-circle"></div><span>不愿意</span></div>
+            <div class="option-card" onclick="selectPreRadio('interview', 'yes', this)"><div class="option-circle"></div><span>愿意 (请在下方填写联系邮箱)</span></div>
+          </div>
+          <input type="text" id="interview_email" class="input-text" placeholder="请输入您的联系邮箱或微信号..." style="margin-top:0.8rem; display:none;" oninput="saveText('interview_email', this.value)">
+        </div>
+      </div>
+
+      <!-- 前测步骤2：基准测试 -->
+      <div id="preStepTab2" class="pre-tab-content" style="display:none;">
+        <h4>二、基准测试</h4>
+        <p style="margin-bottom:1.5rem; font-size:0.9rem;">请仔细评估下列材料的“AI生成情况”并撰写判断理由：</p>
+        
+        <div class="form-group">
+          <p style="background:rgba(255,255,255,0.02); padding:1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.05); margin-bottom:1rem; line-height:1.6; color:#e5e7eb;">
+            <strong>材料A：</strong>当前，新能源汽车产业的快速发展对动力电池性能提出了更高标准。固态锂电池因其在能量密度和安全性能方面的潜在优势，正成为全球研发热点。研究表明，采用固态电解质可有效抑制传统液态锂电池的枝晶问题...
+          </p>
+          <div class="option-card-group grid-2" data-key="base_A">
+            <div class="option-card" onclick="selectPreRadio('base_A', '单纯AI生成', this)"><div class="option-circle"></div><span>单纯AI生成</span></div>
+            <div class="option-card" onclick="selectPreRadio('base_A', '可能AI辅助', this)"><div class="option-circle"></div><span>可能AI辅助</span></div>
+            <div class="option-card" onclick="selectPreRadio('base_A', '完全人类写作', this)"><div class="option-circle"></div><span>完全人类写作</span></div>
+            <div class="option-card" onclick="selectPreRadio('base_A', '不确定', this)"><div class="option-circle"></div><span>不确定</span></div>
+          </div>
+          <textarea class="input-text" rows="3" style="margin-top:0.8rem;" placeholder="您对材料A的判断理由是？" oninput="saveText('base_A_reason', this.value)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <p style="background:rgba(255,255,255,0.02); padding:1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.05); margin-bottom:1rem; line-height:1.6; color:#e5e7eb;">
+            <strong>材料B：</strong>近年来，随着新能源汽车蓬勃发展，人们对动力电池的能量密度和安全性提出了更高的要求， 锂电池固态化被认为是提升电池安全性和能量密度的重要解决方案，由此，固态锂电池在全球范围内引起广泛关注...
+          </p>
+          <div class="option-card-group grid-2" data-key="base_B">
+            <div class="option-card" onclick="selectPreRadio('base_B', '单纯AI生成', this)"><div class="option-circle"></div><span>单纯AI生成</span></div>
+            <div class="option-card" onclick="selectPreRadio('base_B', '可能AI辅助', this)"><div class="option-circle"></div><span>可能AI辅助</span></div>
+            <div class="option-card" onclick="selectPreRadio('base_B', '完全人类写作', this)"><div class="option-circle"></div><span>完全人类写作</span></div>
+            <div class="option-card" onclick="selectPreRadio('base_B', '不确定', this)"><div class="option-circle"></div><span>不确定</span></div>
+          </div>
+          <textarea class="input-text" rows="3" style="margin-top:0.8rem;" placeholder="您对材料B的判断理由是？" oninput="saveText('base_B_reason', this.value)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">哪些具体文本特征会让你觉得有“AI痕迹（AI味）”？</label>
+          <textarea class="input-text" rows="4" placeholder="请尽可能详尽描述，如特定词汇选择、段落工整对称性等..." oninput="saveText('base_features', this.value)"></textarea>
+        </div>
+      </div>
+
+      <!-- 前测步骤3：阅读理解一 -->
+      <div id="preStepTab3" class="pre-tab-content" style="display:none;">
+        <h4>三、阅读理解一：重大工业攻关</h4>
+        
+        <div class="article-box">
+          <h3>为了机匣不再“卡脖子”</h3>
+          <p style="text-align:center; color:#555; margin-top:-0.5rem; font-size:0.9rem;">——我国首套重型五轴立式铣车机床攻关之路</p>
+          <p>3月19日，由武汉重型机床集团有限公司（以下简称武重集团）牵头研制的“大型复杂薄壁回转构件的高精铣车复合柔性加工技术及装备”项目顺利通过中国机械工程学会组织的科技成果鉴定，获得充分肯定。</p>
+          <p>机匣类零件作为燃气轮机的支撑和关键受力零件，需要在高温、高压下工作，是影响燃气轮机抗冲击和抗振动性能的关键因子。燃气轮机机匣多为大直径薄壁件，最薄处只有1.5至3毫米，切削时极易变形，是燃气轮机上最难制造的零件之一。长期以来，我国大量机匣类零件只能采用分工序组合方式加工，精度稳定性难以保证，且成本极高。</p>
+          <p>要实现本项目所要求的一次装夹完成车、铣、钻、镗等全部工序的复合化，首先要实现五轴联动加工。陈昳表示，五轴技术一直被国外封锁，在满足重大装备制造需求的大型、重型车铣类机床领域，国内尚无先例。项目团队十几个人白加黑地工作，用时三年成功研制样机，定位精度指标完全优于国际标准，使用户单位喜出望外，一次订购了39台，打通了成果转化的全链条。</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">1. 您此前对“大型复杂回转薄壁零件高精加工技术及装备”的认知水平？</label>
+          <div class="likert-group" data-key="m1_self">
+            <div class="likert-option" onclick="selectLikert('m1_self', '1', this)">1 (从未听说)</div>
+            <div class="likert-option" onclick="selectLikert('m1_self', '2', this)">2</div>
+            <div class="likert-option" onclick="selectLikert('m1_self', '3', this)">3</div>
+            <div class="likert-option" onclick="selectLikert('m1_self', '4', this)">4</div>
+            <div class="likert-option" onclick="selectLikert('m1_self', '5', this)">5 (非常熟悉)</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">2. 对上述材料的质量完成基准评价：[请选择评分]</label>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">评价指标 1：您认为文章客观反映各方观点、逻辑结构严密的程度 (公正性)</p>
+          <div class="likert-group" data-key="m1_fair1">
+            <div class="likert-option" onclick="selectLikert('m1_fair1', '1', this)">1 (极差)</div>
+            <div class="likert-option" onclick="selectLikert('m1_fair1', '2', this)">2</div>
+            <div class="likert-option" onclick="selectLikert('m1_fair1', '3', this)">3</div>
+            <div class="likert-option" onclick="selectLikert('m1_fair1', '4', this)">4</div>
+            <div class="likert-option" onclick="selectLikert('m1_fair1', '5', this)">5 (极其优秀)</div>
           </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">2. 基准常识：您认为生成式人工智能产生“幻觉”（即一本正经地胡说八道）的主要原因是？</label>
-        <div class="option-card-group">
-          <div class="option-card" onclick="selectRadio('q2', 'prob', this)">
-            <div class="option-circle"></div>
-            <div class="option-text">基于概率统计预测下一个词的生成算法本质缺陷</div>
+      <!-- 前测步骤4：阅读理解二 -->
+      <div id="preStepTab4" class="pre-tab-content" style="display:none;">
+        <h4>四、阅读理解二：古生物遗迹科学发现</h4>
+        
+        <div class="article-box">
+          <h3>重大发现！中国科学家从3500万年前的粪便中，发现地球长这样——</h3>
+          <p>国际学术期刊《iScience》第 26 卷第 9 期的封面报道了越南北部始新世晚期距今 3500 万年前的 55 块保存完好的鳄鱼粪便化石，首次建立了鳄鱼粪新属种，并通过孢粉生态学分析复原了古环境面貌。</p>
+          <figure>
+            <img src="./public/images/图片1.png" alt="粪便化石生态环境复原" onerror="this.src='https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400';">
+            <figcaption>《iScience》第 26 卷第 9 期封面</figcaption>
+          </figure>
+          <p>研究团队发现：针对粪化石，可以通过形态分类、组织切片和CT扫描，揭示古生物的食性特征、消化道结构，甚至古 DNA 编码。孢粉学分析共识别出 76 种孢粉类型。研究结果表明，三千多万年前谅山省那阳盆地属于湿热的热带/亚热带常绿森林与低洼沼泽环境，睡莲浮萍密布。这幅复原画卷为古气候变迁提供了无可辩驳的事实依据。</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">1. 您此前对“遗迹粪化石古生态重建”的学术了解自评？</label>
+          <div class="likert-group" data-key="m2_self">
+            <div class="likert-option" onclick="selectLikert('m2_self', '1', this)">1 (完全不知道)</div>
+            <div class="likert-option" onclick="selectLikert('m2_self', '2', this)">2</div>
+            <div class="likert-option" onclick="selectLikert('m2_self', '3', this)">3</div>
+            <div class="likert-option" onclick="selectLikert('m2_self', '4', this)">4</div>
+            <div class="likert-option" onclick="selectLikert('m2_self', '5', this)">5 (完全掌握)</div>
           </div>
-          <div class="option-card" onclick="selectRadio('q2', 'know', this)">
-            <div class="option-circle"></div>
-            <div class="option-text">后台人工故意输入了虚假知识</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">2. 对上述材料的质量完成基准评价：[请选择评分]</label>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">评价指标 1：您认为文章中科学事实和数据支撑事例的可靠度 (准确性)</p>
+          <div class="likert-group" data-key="m2_acc1">
+            <div class="likert-option" onclick="selectLikert('m2_acc1', '1', this)">1 (极低)</div>
+            <div class="likert-option" onclick="selectLikert('m2_acc1', '2', this)">2</div>
+            <div class="likert-option" onclick="selectLikert('m2_acc1', '3', this)">3</div>
+            <div class="likert-option" onclick="selectLikert('m2_acc1', '4', this)">4</div>
+            <div class="likert-option" onclick="selectLikert('m2_acc1', '5', this)">5 (极高)</div>
           </div>
-          <div class="option-card" onclick="selectRadio('q2', 'cpu', this)">
-            <div class="option-circle"></div>
-            <div class="option-text">服务器算力或运算资源暂时耗尽</div>
-          </div>
+        </div>
+      </div>
+
+      <!-- 前测步骤5：材料分析与简答 -->
+      <div id="preStepTab5" class="pre-tab-content" style="display:none;">
+        <h4>五、材料分析与简答</h4>
+        
+        <div class="article-box">
+          <h3>为AI“复活”逝者划定应用边界</h3>
+          <p>日前，郑州举行了一场清明节节地生态葬，首次亮相的AI数字人“新生”令逝者家属潸然动容。通过视频、相片与声纹模型，AI 技术正被广泛应用于“人脑及形象复活”。但技术的温情背后也暗藏着重大的隐私泄露与侵权风险。去世明星被无授权“复活”遭到父母明确反对。我国《民法典》对死者的人格法益保护作出了详细界定，因此为 AI 数字生命应用划定清晰红线已是迫在眉睫的社会监管使命。</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">1. 关于上述“AI数字复活”材料，您能联想到哪些传播学理论？请列举至少三个：</label>
+          <textarea class="input-text" rows="3" placeholder="例如: 拟态环境理论、媒介代偿论..." oninput="saveText('ana_theory', this.value)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">2. 简答：AIGC对新闻传播领域的学术科研会产生何种关键影响？(字数控制在100字以内)</label>
+          <textarea class="input-text" rows="3" placeholder="不超过100字..." maxlength="100" oninput="saveText('sa_academic', this.value); document.getElementById('academicCharCount').innerText = this.value.length;"></textarea>
+          <div style="text-align:right; font-size:0.8rem; color:var(--text-muted);" id="academicCharCount">0</div>
         </div>
       </div>
 
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="prevStep(2)">返回</button>
-        <button class="btn" id="step3Next" disabled onclick="goToStep4()">下一步 (进入核心阅读与交互)</button>
+        <button class="btn btn-secondary" id="prePrevBtn" disabled onclick="navigatePreTab(-1)">上一页</button>
+        <button class="btn" id="preNextBtn" onclick="navigatePreTab(1)">下一页</button>
       </div>
     </div>
 
-    <!-- Step 4: 学术阅读与AI辅助 (核心交互双栏) -->
-    <div class="glass-card" id="step4Card" style="max-width: 950px; padding: 2rem 2.5rem;">
-      <h2 style="font-size: 1.4rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
-        <span>阶段二：AI 辅助阅读理解研究实验</span>
-        <span style="font-size: 0.85rem; background: rgba(99, 102, 241, 0.15); color: #a5b4fc; padding: 0.3rem 0.8rem; border-radius: 30px;" id="subjectBadge">受试者: SUB-DEMO-99</span>
-      </h2>
-      <p style="margin-bottom: 1.2rem; font-size: 0.9rem;">提示：请仔细阅读左侧学术文章。在阅读期间，如果您遇到任何不懂的技术名词、背景，可以在右侧的 AI 助手中自由输入并提问，它将协助您思考。</p>
+    <!-- Step 4: 过渡说明页 -->
+    <div class="glass-card" id="step4Card">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: pulse 2s infinite;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+      </div>
+      <h2>第一阶段（前测）已顺利完成！</h2>
+      <p style="text-align: center; max-width: 600px; margin: 0 auto 2rem auto; font-size:1.05rem;">
+        恭喜您！系统已成功同步并归档了您的基准前测问卷分值。<br/><br/>
+        接下来，您将进入核心的**第二阶段 (后测阶段)**。<br/>
+        在这个阶段，我们将**全面启动右侧的智能 AI 学术助手**。当您在阅读相同的深度学术论述文章或撰写传播学分析视角时，可以向 AI 发送任意请求，AI 会提供结构化评分依据及详细知识解释，供您吸收并修正您的前测评分决策。
+      </p>
       
-      <div class="experiment-container">
-        <!-- 左侧学术阅读面板 -->
-        <div class="reading-panel">
-          <h3 style="color: white; font-size: 1.15rem; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.5rem;">技术社会学：生成式 AI 的结构化认知溢出</h3>
-          <p>生成式人工智能（Generative AI，如大语言模型）的爆发正在彻底改变知识生产和信息交互的微观图景。从技术社会学的视角来看，AI 并不只是一种简单的劳动替代工具，而是一种<strong>“结构化认知溢出”的催化器</strong>。</p>
-          <p>在传统的研究范式下，人类学者通过系统的文献梳理、数据比对以及逻辑推理来搭建认知框架。这一过程具有高度的结构化约束。然而，大语言模型通过海量高维向量关联，提供了前所未有的“无界关联”能力。这种计算特性导致人类的“知识联想”不再受限于物理介质的局部搜索，从而产生突变的灵感关联。</p>
-          <p>但这也衍生出关键的<strong>“认知寄生”隐患</strong>。当受试者过度依赖黑箱化算法提供的问题解答和结构图景时，其大脑的底层工作记忆区活跃度显著降低，进而弱化对信息的深度求证欲望。实验探究人类在此技术变革期的自适应批判性思维水平，具有重要的当代社会学价值。</p>
-          <p style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem; color: #a5b4fc; font-weight: 500;">阅读后请回答：</p>
-          <p><strong>前测关联提问：</strong>基于以上文本，您认为“认知寄生”隐患主要指向人类大脑哪种机能的退化风险？</p>
-          <div class="option-card" onclick="selectReadingAnswer('read_q1', 'working_mem', this)">
-            <div class="option-circle"></div>
-            <span class="option-text">深度工作记忆活跃度与求证批判冲动</span>
+      <div style="text-align: center; margin-top: 3rem;">
+        <button class="btn" onclick="goToStep5()">启动后测并激活 AI 智能助手</button>
+      </div>
+    </div>
+
+    <!-- Step 5: 后测阶段 (AI 交互面板双栏) -->
+    <div class="glass-card" id="step5Card" style="max-width: 1050px; padding: 2rem;">
+      <h2 style="font-size: 1.3rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; border:none; padding-bottom:0;">
+        <span>第二阶段：AI 辅助对比测试 (后测)</span>
+        <span style="font-size: 0.85rem; background: rgba(99, 102, 241, 0.15); color: #a5b4fc; padding: 0.3rem 0.8rem; border-radius: 30px;" id="postSubTab">当前步骤: 一、阅读理解一 (五轴机床)</span>
+      </h2>
+      <p style="margin-bottom: 1.5rem; font-size:0.9rem;">说明：您可以在右侧输入指令并向 AI 提问。AI 已经被注入了对应的文章全文知识和20个质量维度的精细标准打分系统。</p>
+
+      <div class="split-layout">
+        <!-- 左侧：问卷输入区域 -->
+        <div class="scroll-panel">
+          
+          <!-- 后测步骤1：五轴机床 -->
+          <div id="postStepTab1" class="post-tab-content">
+            <div class="article-box" style="padding:1.5rem; font-size:0.9rem; margin-bottom:1.5rem;">
+              <h3 style="font-size:1.15rem;">为了机匣不再“卡脖子”</h3>
+              <p style="text-indent: 2em; margin-bottom: 0.8rem; color:#444;">燃气轮机机匣为大直径薄壁件，最薄处1.5-3mm，极易变形极难加工。武重集团牵头历时三年成功攻克“大型复杂薄壁回转构件五轴联动立式铣车复合加工技术”，一次装夹完成车铣钻镗，完全实现国产替代，打破封锁。</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" style="font-size:0.9rem;">1. 您认为材料在体现多元见解、不同主体的倾向均衡度如何？（多样性）</label>
+              <div class="likert-group" data-key="post_m1_div1">
+                <div class="likert-option" onclick="selectLikert('post_m1_div1', '1', this)">1 (低)</div>
+                <div class="likert-option" onclick="selectLikert('post_m1_div1', '2', this)">2</div>
+                <div class="likert-option" onclick="selectLikert('post_m1_div1', '3', this)">3</div>
+                <div class="likert-option" onclick="selectLikert('post_m1_div1', '4', this)">4</div>
+                <div class="likert-option" onclick="selectLikert('post_m1_div1', '5', this)">5 (高)</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" style="font-size:0.9rem;">2. 您认为材料的语言比喻准确度与逻辑清晰度如何？（可理解性）</label>
+              <div class="likert-group" data-key="post_m1_und1">
+                <div class="likert-option" onclick="selectLikert('post_m1_und1', '1', this)">1 (极差)</div>
+                <div class="likert-option" onclick="selectLikert('post_m1_und1', '2', this)">2</div>
+                <div class="likert-option" onclick="selectLikert('post_m1_und1', '3', this)">3</div>
+                <div class="likert-option" onclick="selectLikert('post_m1_und1', '4', this)">4</div>
+                <div class="likert-option" onclick="selectLikert('post_m1_und1', '5', this)">5 (完美)</div>
+              </div>
+            </div>
           </div>
-          <div class="option-card" style="margin-top:0.5rem" onclick="selectReadingAnswer('read_q1', 'phys_limit', this)">
-            <div class="option-circle"></div>
-            <span class="option-text">物理媒介局部检索与搜索的速度</span>
+
+          <!-- 后测步骤2：鳄鱼粪化石 -->
+          <div id="postStepTab2" class="post-tab-content" style="display:none;">
+            <div class="article-box" style="padding:1.5rem; font-size:0.9rem; margin-bottom:1.5rem;">
+              <h3 style="font-size:1.15rem;">重大发现！3500万年前鳄鱼粪化石生态重建</h3>
+              <p style="text-indent: 2em; margin-bottom: 0.8rem; color:#444;">科考队在越南发现Croccopros naduongensis新种，基于能谱分析、埋藏学以及西双版纳植物园76种孢粉分析，彻底重建了热带湿润常绿阔叶古气候面貌，大鱼吃小鱼的捕食食物链网跃然纸上。</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" style="font-size:0.9rem;">1. 您认为这篇科普文章的事实严谨度、以及区分事实与记者的倾向主观倾向性做得如何？（准确性）</label>
+              <div class="likert-group" data-key="post_m2_acc1">
+                <div class="likert-option" onclick="selectLikert('post_m2_acc1', '1', this)">1 (非常差)</div>
+                <div class="likert-option" onclick="selectLikert('post_m2_acc1', '2', this)">2</div>
+                <div class="likert-option" onclick="selectLikert('post_m2_acc1', '3', this)">3</div>
+                <div class="likert-option" onclick="selectLikert('post_m2_acc1', '4', this)">4</div>
+                <div class="likert-option" onclick="selectLikert('post_m2_acc1', '5', this)">5 (无可挑剔)</div>
+              </div>
+            </div>
           </div>
+
+          <!-- 后测步骤3：AI复活与简答 -->
+          <div id="postStepTab3" class="post-tab-content" style="display:none;">
+            <div class="article-box" style="padding:1.5rem; font-size:0.9rem; margin-bottom:1.5rem;">
+              <h3 style="font-size:1.15rem;">为AI数字逝者复活划定红线边界</h3>
+              <p style="text-indent: 2em; margin-bottom: 0.8rem; color:#444;">技术提供情感代偿慰藉，但侵犯人伦尊严、肖像隐私、引发勒索的负效应极其明显。必须在死者人格利益法定继承代理人同意的基础上，遵守民法典严格规范监管。</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" style="font-size:0.9rem;">1. 关于“AI逝者复活”联想到的传播学理论，AI助手给出了什么新思路？请总结撰写您的分析视角：</label>
+              <textarea class="input-text" rows="3" placeholder="结合AI的解答，完善您对传播学视角的回答..." oninput="saveText('post_theory_1', this.value)"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" style="font-size:0.9rem;">2. 简答：AIGC对新传业界实践的具体影响？(控制在100字以内)</label>
+              <textarea class="input-text" rows="3" placeholder="输入您的最终修正观点..." maxlength="100" oninput="saveText('post_sa_industry', this.value); document.getElementById('postCharCount').innerText = this.value.length;"></textarea>
+              <div style="text-align:right; font-size:0.8rem; color:var(--text-muted);" id="postCharCount">0</div>
+            </div>
+          </div>
+
         </div>
 
-        <!-- 右侧AI对话面板 -->
+        <!-- 右侧：AI 对话面板 -->
         <div class="chat-panel">
           <div class="chat-header">
-            <div class="ai-badge"></div>
-            <div style="font-size: 0.85rem; font-weight: 600; color: #fff;">内置学术辅助 AI 助手 (GPT/DeepSeek V4-Flash)</div>
+            <div class="dot"></div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #fff;">学术辅助智能 AI 助手 (已隔离当前材料)</div>
           </div>
           
           <div class="chat-messages" id="chatMessages">
             <div class="chat-bubble ai">
-              您好！我是本次实验的 AI 助手。针对本篇技术社会学的材料，您可以向我提问任何问题。例如：“什么是结构化认知溢出？”、“如何理解认知寄生？”
+              您好！我是本次调研系统的学术辅助助手。我已载入了您左侧正阅读的文章。
+              您可以让我：“针对本章的多样性、伦理等维度给出具体分值和依据”或“解释什么叫结构化溢出”。
             </div>
+          </div>
+
+          <div class="prompt-suggestion-box" onclick="applySuggestedPrompt()">
+            💡 【点击填入新传专业提问模板】向AI询问：文章质量多维度评估和评分依据...
           </div>
           
           <div class="chat-input-area">
-            <input type="text" id="chatInput" class="chat-input" placeholder="向 AI 提问..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <input type="text" id="chatInput" class="chat-input" placeholder="输入问题或点击上方模板..." onkeydown="if(event.key==='Enter') sendChatMessage()">
             <button class="chat-send-btn" onclick="sendChatMessage()">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             </button>
@@ -742,99 +1060,82 @@
       </div>
 
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="prevStep(3)">返回</button>
-        <button class="btn" id="step4Next" disabled onclick="goToStep5()">下一步 (完成阅读并填写后测)</button>
+        <button class="btn btn-secondary" id="postPrevBtn" disabled onclick="navigatePostTab(-1)">上一页</button>
+        <button class="btn" id="postNextBtn" onclick="navigatePostTab(1)">下一页</button>
       </div>
     </div>
 
-    <!-- Step 5: 后测与最终反馈 -->
-    <div class="glass-card" id="step5Card">
-      <h2>阶段三：认知后测与交互反馈</h2>
-      <p style="margin-bottom: 2rem;">实验已进入最终步骤，请结合您的交互体验，填写如下反馈：</p>
-      
-      <div class="form-group">
-        <label class="form-label">1. 您在刚才的阅读交互中，是否能敏锐察觉到 AI 对话在启发灵感的同时，减少了您主动求证的倾向？</label>
-        <div class="option-card-group">
-          <div class="option-card" onclick="selectRadio('post_q1', 'strong', this)">
-            <div class="option-circle"></div>
-            <div class="option-text">有非常强烈的同感，AI 的及时回复让人变得懒惰</div>
-          </div>
-          <div class="option-card" onclick="selectRadio('post_q1', 'weak', this)">
-            <div class="option-circle"></div>
-            <div class="option-text">有一点感觉，但可以通过主观能动性来克制</div>
-          </div>
-          <div class="option-card" onclick="selectRadio('post_q1', 'no', this)">
-            <div class="option-circle"></div>
-            <div class="option-text">完全没有，AI 反而激发了我去查阅外部资料的兴趣</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="feedbackText">2. 开放性反馈：您认为生成式人工智能应如何演进，才能既提供认知辅助又避免上述的“认知寄生”隐患？</label>
-        <textarea id="feedbackText" class="input-text" style="resize: vertical; min-height: 100px; font-family:inherit; font-size:0.95rem; line-height:1.6;" placeholder="请输入您的洞见，支持换行..." oninput="checkFeedbackText()"></textarea>
-      </div>
-
-      <div class="btn-group">
-        <button class="btn btn-secondary" onclick="prevStep(4)">返回</button>
-        <button class="btn" id="step5Next" disabled onclick="goToStep6()">提交我的问卷数据</button>
-      </div>
-    </div>
-
-    <!-- Step 6: 实验完成与数据导出 -->
+    <!-- Step 6: 答卷汇总与 SPSS 兼容数据导出 -->
     <div class="glass-card" id="step6Card">
       <div style="text-align: center; margin-bottom: 2rem;">
         <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 10px rgba(16,185,129,0.3));"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       </div>
-      <h2 style="text-align: center; color: #34d399;">实验完成！感谢您的积极参与！</h2>
-      <p style="text-align: center; max-width: 600px; margin: 0 auto 2rem auto;">
-        您的本次实验答卷和 AI 交互日志已被本地环境完整追踪脱敏。您可以直接在下方查看本次收集并格式化后的受试者数据包，或者将其导出。
+      <h2 style="text-align: center; color: #34d399; border:none;">双阶段实验完美收官！</h2>
+      <p style="text-align: center; max-width: 650px; margin: 0 auto 2rem auto; font-size:0.95rem;">
+        系统已完整捕捉了您在**无AI干预前测**和**AI交互干预后测**阶段的决策修正细节，并保留了人机对话日志。您可以直接在下方复制脱敏数据，或者导出学术格式 CSV 表格进行 SPSS、R 语言统计。
       </p>
 
       <div class="toast" id="copyToast">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-        <span>实验 JSON 数据已复制到剪贴板，可用于科研编码！</span>
+        <span>实验 JSON 格式数据已快速复制到剪贴板！</span>
       </div>
 
-      <h3 style="color: white; font-size: 1.05rem; margin-bottom: 0.5rem; text-align: left;">受试者实验数据预览 (JSON 格式化)</h3>
+      <h3 style="color: white; font-size: 1rem; margin-bottom: 0.5rem; border:none; padding-left:0;">脱敏实验数据预览 (JSON)</h3>
       <div class="json-preview" id="dataPreview">
         正在读取记录...
       </div>
 
       <div class="btn-group" style="justify-content: center; gap: 1.5rem;">
-        <button class="btn" onclick="copyJsonData()">复制数据内容</button>
-        <button class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16,185,129,0.3);" onclick="downloadCSV()">导出脱敏实验 CSV</button>
+        <button class="btn btn-secondary" onclick="copyJsonData()">复制 JSON 数据</button>
+        <button class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16,185,129,0.3);" onclick="downloadCSV()">导出 SPSS 兼容实验 CSV</button>
       </div>
-
-      <p style="margin-top: 2rem; font-size: 0.8rem; text-align: center; color: var(--text-muted);">
-        提示：双击重新体验演示可以刷新测试数据。
-      </p>
     </div>
   </div>
 
   <script>
-    // 实验数据收集容器
+    // 学术脱敏数据大字段模型 (结构同 Next.js + SQLite schema)
     const experimentData = {
       subjectId: 'SUB-DEMO-99',
+      preTestStartTime: '',
+      postTestStartTime: '',
       durationSeconds: 0,
-      timestamp: '',
-      consentAgreed: false,
-      preAnswers: {
-        ai_frequency: '',
-        hallucination_reason: ''
+      preFormData: {
+        freq: '',
+        purpose: [],
+        purpose_other: '',
+        knowledge: '',
+        diff: '',
+        tools: [],
+        tools_other: '',
+        interview: '',
+        interview_email: '',
+        base_A: '',
+        base_A_reason: '',
+        base_B: '',
+        base_B_reason: '',
+        base_features: '',
+        m1_self: '',
+        m1_fair1: '',
+        m2_self: '',
+        m2_acc1: '',
+        ana_theory: '',
+        sa_academic: ''
       },
-      readingAnswer: '',
-      chatLogs: [],
-      postAnswers: {
-        dependency_awareness: '',
-        open_feedback: ''
-      }
+      postFormData: {
+        post_m1_div1: '',
+        post_m1_und1: '',
+        post_m2_acc1: '',
+        post_theory_1: '',
+        post_sa_industry: ''
+      },
+      chatLogs: []
     };
 
-    let timerInterval = null;
     let secondsElapsed = 0;
+    let timerInterval = null;
+    let activePreTab = 1;
+    let activePostTab = 1;
 
-    // 步骤跳转逻辑
     function updateProgress(stepNumber) {
       const percentage = ((stepNumber - 1) / 5) * 100;
       document.getElementById('progressBar').style.width = percentage + '%';
@@ -855,32 +1156,29 @@
       document.querySelectorAll('.glass-card').forEach(card => card.classList.remove('active'));
       document.getElementById('step' + stepId + 'Card').classList.add('active');
       updateProgress(stepId);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // Step 1 -> Step 2
     function goToStep2() {
       const subId = document.getElementById('subjectId').value.trim();
       if (!subId) {
-        alert('请输入有效的受试者编号！');
+        alert('请输入受试者编号！');
         return;
       }
       experimentData.subjectId = subId;
-      document.getElementById('subjectBadge').innerText = '受试者: ' + subId;
-
       switchCard(2);
 
-      // 开始同意倒计时
       let countdown = 5;
       const agreeBtn = document.getElementById('agreeBtn');
       agreeBtn.disabled = true;
-      
       const timer = setInterval(() => {
         countdown--;
         if (countdown > 0) {
           agreeBtn.innerText = `请认真阅读 (${countdown}s)`;
         } else {
           clearInterval(timer);
-          agreeBtn.innerText = "我已充分阅读并同意，开始实验";
+          agreeBtn.innerText = "我同意此伦理和数据协议，进入前测";
           agreeBtn.disabled = false;
         }
       }, 1000);
@@ -888,77 +1186,216 @@
 
     // Step 2 -> Step 3
     function goToStep3() {
-      experimentData.consentAgreed = true;
-      experimentData.timestamp = new Date().toLocaleString();
-      
-      // 启动实验总时长追踪
-      secondsElapsed = 0;
+      experimentData.preTestStartTime = new Date().toLocaleString();
       clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        secondsElapsed++;
-      }, 1000);
-
+      timerInterval = setInterval(() => secondsElapsed++, 1000);
       switchCard(3);
     }
 
-    // 单选卡片交互组件 (前测与后测)
-    function selectRadio(questionKey, val, element) {
-      // 选中当前问题范围内的卡片，清除同级已选项
-      const siblingCards = element.parentElement.querySelectorAll('.option-card');
-      siblingCards.forEach(c => c.classList.remove('selected'));
-      element.classList.add('selected');
+    // 前测子页面切换
+    const preTabTitles = {
+      1: "一、基本信息",
+      2: "二、基准测试",
+      3: "三、阅读理解一 (机床)",
+      4: "四、阅读理解二 (古生物)",
+      5: "五、材料分析与简答"
+    };
 
-      if (questionKey === 'q1') {
-        experimentData.preAnswers.ai_frequency = val;
-      } else if (questionKey === 'q2') {
-        experimentData.preAnswers.hallucination_reason = val;
-      } else if (questionKey === 'post_q1') {
-        experimentData.postAnswers.dependency_awareness = val;
+    function navigatePreTab(dir) {
+      // 检验是否填答完整
+      if (dir === 1 && !validatePreTab(activePreTab)) {
+        alert("为确保学术数据严谨，请将本页所有必填题及客观量表评分答满！");
+        return;
       }
 
-      // 验证是否进入下一步
-      checkStep3Validation();
-      checkStep5Validation();
-    }
+      document.getElementById(`preStepTab${activePreTab}`).style.display = 'none';
+      activePreTab += dir;
+      document.getElementById(`preStepTab${activePreTab}`).style.display = 'block';
 
-    function checkStep3Validation() {
-      const nextBtn = document.getElementById('step3Next');
-      if (experimentData.preAnswers.ai_frequency && experimentData.preAnswers.hallucination_reason) {
-        nextBtn.disabled = false;
+      document.getElementById('preSubTab').innerText = `当前步骤: ${preTabTitles[activePreTab]}`;
+      
+      document.getElementById('prePrevBtn').disabled = activePreTab === 1;
+      
+      if (activePreTab === 5) {
+        document.getElementById('preNextBtn').innerText = "提交前测";
+      } else {
+        document.getElementById('preNextBtn').innerText = "下一页";
       }
+
+      if (activePreTab > 5) {
+        activePreTab = 5; // fallback
+        goToStep4();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Step 3 -> Step 4
+    function validatePreTab(tabNum) {
+      const data = experimentData.preFormData;
+      if (tabNum === 1) {
+        return !!(data.freq && data.purpose.length > 0 && data.knowledge && data.diff && data.tools.length > 0 && data.interview);
+      }
+      if (tabNum === 2) {
+        return !!(data.base_A && data.base_B && data.base_features);
+      }
+      if (tabNum === 3) {
+        return !!(data.m1_self && data.m1_fair1);
+      }
+      if (tabNum === 4) {
+        return !!(data.m2_self && data.m2_acc1);
+      }
+      if (tabNum === 5) {
+        return !!(data.ana_theory && data.sa_academic);
+      }
+      return true;
+    }
+
+    // Step 3 (Pre-test Done) -> Step 4
     function goToStep4() {
       switchCard(4);
     }
 
-    // 阅读板块单选交互
-    function selectReadingAnswer(key, val, element) {
-      const siblingCards = element.parentElement.querySelectorAll('.option-card');
-      siblingCards.forEach(c => c.classList.remove('selected'));
-      element.classList.add('selected');
-
-      experimentData.readingAnswer = val;
-      
-      checkStep4Validation();
+    // Step 4 -> Step 5
+    function goToStep5() {
+      experimentData.postTestStartTime = new Date().toLocaleString();
+      switchCard(5);
     }
 
-    function checkStep4Validation() {
-      const nextBtn = document.getElementById('step4Next');
-      // 实验组核心规则：受试者必须至少向 AI 提问过一个问题，并答完了阅读理解常识，方可解锁后测！这对应了我们严苛的学术流程控制！
-      if (experimentData.readingAnswer && experimentData.chatLogs.length > 0) {
-        nextBtn.disabled = false;
+    // 后测子页面切换
+    const postTabTitles = {
+      1: "一、阅读理解一 (五轴机床)",
+      2: "二、阅读理解二 (古生物)",
+      3: "三、材料分析与简答"
+    };
+
+    function navigatePostTab(dir) {
+      if (dir === 1 && !validatePostTab(activePostTab)) {
+        alert("请先完成本页的打分或简答填空！");
+        return;
+      }
+
+      document.getElementById(`postStepTab${activePostTab}`).style.display = 'none';
+      activePostTab += dir;
+      document.getElementById(`postStepTab${activePostTab}`).style.display = 'block';
+
+      document.getElementById('postSubTab').innerText = `当前步骤: ${postTabTitles[activePostTab]}`;
+      document.getElementById('postPrevBtn').disabled = activePostTab === 1;
+
+      if (activePostTab === 3) {
+        document.getElementById('postNextBtn').innerText = "最终数据结算";
+      } else {
+        document.getElementById('postNextBtn').innerText = "下一页";
+      }
+
+      if (activePostTab > 3) {
+        activePostTab = 3;
+        goToStep6();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validatePostTab(tabNum) {
+      const data = experimentData.postFormData;
+      if (tabNum === 1) {
+        return !!(data.post_m1_div1 && data.post_m1_und1);
+      }
+      if (tabNum === 2) {
+        return !!data.post_m2_acc1;
+      }
+      if (tabNum === 3) {
+        return !!(data.post_theory_1 && data.post_sa_industry);
+      }
+      return true;
+    }
+
+    // Step 5 -> Step 6
+    function goToStep6() {
+      clearInterval(timerInterval);
+      experimentData.durationSeconds = secondsElapsed;
+      switchCard(6);
+
+      document.getElementById('dataPreview').innerText = JSON.stringify(experimentData, null, 2);
+    }
+
+    // 前测打分/单选事件
+    function selectPreRadio(key, val, el) {
+      const siblings = el.parentElement.querySelectorAll('.option-card');
+      siblings.forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+
+      experimentData.preFormData[key] = val;
+
+      if (key === 'interview') {
+        document.getElementById('interview_email').style.display = val === 'yes' ? 'block' : 'none';
       }
     }
 
-    // AI 辅助助手模拟回复库
-    const aiKnowledgeBase = {
-      '结构化认知溢出': '“结构化认知溢出”指的是在大语言模型辅助下，人类知识检索从传统的线性物理查阅拓宽为无界的向量相关性关联。这使得受试者能快速跳出原有的逻辑屏障，获得关联性的学术灵感与认知补充。',
-      '认知寄生': '“认知寄生”是指受试者在高频次、高可用性黑箱模型解答下，工作记忆与深度质疑意愿产生萎缩，减少去源头查证、交叉比对事实的思考习惯，类似于认知机能的“外部托管”。',
-      '技术社会学': '技术社会学重点关注技术不仅是客观的生产工具，还构建了新型的社会行动主体和权力关系。在这里，AI 扮演了受试者心智结构的“共生者”角色，重塑人类思维方式。',
-      'default': '这是一个极佳的问题！从我们实验设定的“结构化溢出”视角来看，您关注的是人机互构的底层关系。针对本材料，AI 能在宏观语义网络上为您提供聚合梳理，但为了防止学术幻觉，仍建议您在此阶段保持对细节的事实审查。'
+    // 多选复选卡片
+    function toggleCheckbox(key, val, el) {
+      el.classList.toggle('selected');
+      const arr = experimentData.preFormData[key];
+      if (arr.includes(val)) {
+        experimentData.preFormData[key] = arr.filter(v => v !== val);
+      } else {
+        arr.push(val);
+      }
+
+      if (key === 'purpose') {
+        document.getElementById('purpose_other').style.display = arr.includes('其他') ? 'block' : 'none';
+      }
+      if (key === 'tools') {
+        document.getElementById('tools_other').style.display = arr.includes('其他') ? 'block' : 'none';
+      }
+    }
+
+    // 通用李克特与打分函数
+    function selectLikert(key, val, el) {
+      const siblings = el.parentElement.querySelectorAll('.likert-option');
+      siblings.forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+
+      if (key.startsWith('post_')) {
+        experimentData.postFormData[key] = val;
+      } else {
+        experimentData.preFormData[key] = val;
+      }
+    }
+
+    // 存入文本框
+    function saveText(key, val) {
+      if (key.startsWith('post_')) {
+        experimentData.postFormData[key] = val;
+      } else {
+        experimentData.preFormData[key] = val;
+      }
+    }
+
+    // ---------------- AI 智能对话模拟逻辑 ----------------
+    const aiAnswers = {
+      1: {
+        keyword: '多样性',
+        resp: '【AI 助手打分依据建议】：\n针对材料一《为了机匣不再“卡脖子”》，在“多样性”三个维度上：\n1. 【多元见解】：给予 3 分。文章主要采用了武重集团管理层洪彰勇与研究院院长陈昳的工程师视角，缺乏第三方行业专家和用户反馈的多样视角。\n2. 【视角丰富度】：给予 4 分。对五轴立式车铣重型机床的攻克到成果转换链路有清晰展示，覆盖政策导向和技术发展。\n3. 【来源多样性】：给予 3 分。信息来源几乎全部集中在武重集团内部通稿和官方鉴定，缺乏行业客观多维交叉论证。'
+      },
+      2: {
+        keyword: '准确性',
+        resp: '【AI 助手评分依据建议】：\n针对材料二《3500万年前鳄鱼粪便重建地球》，在“准确性”维度上：\n1. 【事实准确】：给予 5 分。研究成果直接来自顶尖学术期刊《iScience》第26卷第9期，拥有CT三维重建及西双版纳热带植物园76种孢粉分类学鉴定，数据支撑非常坚实可靠。\n2. 【事例支撑】：给予 5 分。援引英国布里斯托大学CT扫描海相粪化石食物网事例，强有力论证了其学术史地位。'
+      },
+      3: {
+        keyword: '传播学理论',
+        resp: '【AI 助手关于“AI逝者复活”的传播学理论视角】：\n您可以联想并论述以下三个新传学界理论：\n1. 【技术代偿与媒介仪式】：AI数字人扮演了对实体亲人情感缺陷的补偿媒介，通过清明公祭将虚拟空间仪式化，重建宗族记忆符号。\n2. 【拟态环境与拟真境况】：鲍德里亚的“超真实（Hyperreality）”。受试家属与高逼真AI数字生命的对话，让符号替代了真实逝者本身，人机交往逐渐“反客为主”。\n3. 【媒介共生与身体托管】：受试者将个体情感记忆以及肖像特征交由算法黑箱托管，重新构建了人机深层的情感连接和共生边界。'
+      }
     };
+
+    function applySuggestedPrompt() {
+      let prompt = "";
+      if (activePostTab === 1) {
+        prompt = "我是一名新闻传播方向受试者，请帮我针对材料一《为了机匣不再卡脖子》的【多样性】和【可理解性】打分，并详细解释打分依据。";
+      } else if (activePostTab === 2) {
+        prompt = "我希望做学术评估。请基于材料二《鳄鱼粪便科学发现》，分析本篇科普新闻的【准确性】和【事例支撑度】，并提供打分建议。";
+      } else {
+        prompt = "关于AI逝者复活材料，新传学术研究中有哪些可以切入的重要【传播学理论】和【研究视角】？请详细列举三个并给出方法设计。";
+      }
+      document.getElementById('chatInput').value = prompt;
+    }
 
     function sendChatMessage() {
       const inputEl = document.getElementById('chatInput');
@@ -974,105 +1411,87 @@
       chatMessages.appendChild(userBubble);
       inputEl.value = '';
 
-      // 记录数据
+      // 记入日志
       experimentData.chatLogs.push({ role: 'user', content: text, time: new Date().toLocaleTimeString() });
-
       chatMessages.scrollTop = chatMessages.scrollHeight;
 
-      // 2. 模拟加载 AI 思考中...
+      // 2. 模拟学术 AI 处理
       setTimeout(() => {
-        let responseText = aiKnowledgeBase['default'];
+        let respText = "这是一个很有深度的问题。基于当前阅读章节的材料，";
         
-        // 简单检索关键字来做拟真的应答
-        for (let key in aiKnowledgeBase) {
-          if (text.includes(key)) {
-            responseText = aiKnowledgeBase[key];
-            break;
-          }
+        let matched = false;
+        const currentTab = activePostTab;
+        
+        if (currentTab === 1) {
+          respText += aiAnswers[1].resp;
+        } else if (currentTab === 2) {
+          respText += aiAnswers[2].resp;
+        } else {
+          respText += aiAnswers[3].resp;
         }
 
         const aiBubble = document.createElement('div');
         aiBubble.className = 'chat-bubble ai';
-        aiBubble.innerText = responseText;
+        aiBubble.innerText = respText;
         chatMessages.appendChild(aiBubble);
 
-        // 记录数据
-        experimentData.chatLogs.push({ role: 'assistant', content: responseText, time: new Date().toLocaleTimeString() });
-
+        // 记入日志
+        experimentData.chatLogs.push({ role: 'assistant', content: respText, time: new Date().toLocaleTimeString() });
         chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        // 更新步骤 4 的按钮验证状态（至少要求问过一次）
-        checkStep4Validation();
-      }, 800);
+      }, 700);
     }
 
-    // Step 4 -> Step 5
-    function goToStep5() {
-      switchCard(5);
-    }
-
-    // 验证开放反馈文本
-    function checkFeedbackText() {
-      experimentData.postAnswers.open_feedback = document.getElementById('feedbackText').value.trim();
-      checkStep5Validation();
-    }
-
-    function checkStep5Validation() {
-      const nextBtn = document.getElementById('step5Next');
-      if (experimentData.postAnswers.dependency_awareness && experimentData.postAnswers.open_feedback.length > 5) {
-        nextBtn.disabled = false;
-      }
-    }
-
-    // Step 5 -> Step 6 (展示成果预览与导出)
-    function goToStep6() {
-      clearInterval(timerInterval);
-      experimentData.durationSeconds = secondsElapsed;
-      
-      switchCard(6);
-
-      // 渲染最终数据预览
-      const jsonPreview = document.getElementById('dataPreview');
-      jsonPreview.innerText = JSON.stringify(experimentData, null, 2);
-    }
-
-    // 前进后退快捷辅助函数
-    function prevStep(targetStep) {
-      switchCard(targetStep);
-    }
-
-    // 一键复制功能
+    // 复制数据
     function copyJsonData() {
-      const dataStr = JSON.stringify(experimentData, null, 2);
-      navigator.clipboard.writeText(dataStr).then(() => {
+      const jsonStr = JSON.stringify(experimentData, null, 2);
+      navigator.clipboard.writeText(jsonStr).then(() => {
         const toast = document.getElementById('copyToast');
         toast.style.display = 'flex';
-        setTimeout(() => {
-          toast.style.display = 'none';
-        }, 3000);
+        setTimeout(() => toast.style.display = 'none', 3000);
       });
     }
 
-    // 拟真 CSV 导出函数 (生成符合学术量化工具 SPSS/R 的数据格式)
+    // 导出符合 R / SPSS 学术格式的脱敏 CSV
     function downloadCSV() {
       const headers = [
-        'subjectId', 'durationSeconds', 'timestamp', 'consentAgreed',
-        'pre_ai_frequency', 'pre_hallucination_reason',
-        'readingAnswer', 'totalChatInteractions',
-        'post_dependency_awareness', 'post_open_feedback'
+        'subjectId', 'preTestStartTime', 'postTestStartTime', 'durationSeconds',
+        'pre_freq', 'pre_purpose', 'pre_knowledge', 'pre_diff', 'pre_tools', 'pre_interview',
+        'pre_base_A', 'pre_base_A_reason', 'pre_base_B', 'pre_base_B_reason', 'pre_base_features',
+        'pre_m1_self', 'pre_m1_fair1', 'pre_m2_self', 'pre_m2_acc1', 'pre_ana_theory', 'pre_sa_academic',
+        'post_m1_div1', 'post_m1_und1', 'post_m2_acc1', 'post_theory_1', 'post_sa_industry', 'chatLogsCount'
       ];
-      
+
+      const pre = experimentData.preFormData;
+      const post = experimentData.postFormData;
+
       const row = [
         experimentData.subjectId,
+        experimentData.preTestStartTime,
+        experimentData.postTestStartTime,
         experimentData.durationSeconds,
-        experimentData.timestamp,
-        experimentData.consentAgreed ? 'Yes' : 'No',
-        experimentData.preAnswers.ai_frequency,
-        experimentData.preAnswers.hallucination_reason,
-        experimentData.readingAnswer,
-        experimentData.chatLogs.length / 2, // 一问一答算作一次完整交互
-        experimentData.postAnswers.dependency_awareness,
-        experimentData.postAnswers.open_feedback.replace(/"/g, '""')
+        pre.freq,
+        pre.purpose.join('|'),
+        pre.knowledge,
+        pre.diff,
+        pre.tools.join('|'),
+        pre.interview,
+        pre.base_A,
+        pre.base_A_reason.replace(/"/g, '""'),
+        pre.base_B,
+        pre.base_B_reason.replace(/"/g, '""'),
+        pre.base_features.replace(/"/g, '""'),
+        pre.m1_self,
+        pre.m1_fair1,
+        pre.m2_self,
+        pre.m2_acc1,
+        pre.ana_theory.replace(/"/g, '""'),
+        pre.sa_academic.replace(/"/g, '""'),
+        post.post_m1_div1,
+        post.post_m1_und1,
+        post.post_m2_acc1,
+        post.post_theory_1.replace(/"/g, '""'),
+        post.post_sa_industry.replace(/"/g, '""'),
+        experimentData.chatLogs.length / 2
       ];
 
       const csvContent = "\uFEFF" + [
@@ -1084,7 +1503,7 @@
       const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
       link.setAttribute("href", url);
-      link.setAttribute("download", `survey_demo_data_${experimentData.subjectId}.csv`);
+      link.setAttribute("download", `academic_survey_data_${experimentData.subjectId}.csv`);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
